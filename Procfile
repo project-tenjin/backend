@@ -1,2 +1,1 @@
-web: java -Dserver.port=$PORT $JAVA_OPTS -jar build/libs/project-tenjin-1.0-SNAPSHOT.jar
-
+web: java -Dserver.port=$PORT $JAVA_OPTS -javaagent:newrelic/newrelic.jar -jar build/libs/project-tenjin-1.0-SNAPSHOT.jar
