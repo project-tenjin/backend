@@ -1,0 +1,15 @@
+language: java
+before_cache:
+- rm -f  $HOME/.gradle/caches/modules-2/modules-2.lock
+- rm -fr $HOME/.gradle/caches/*/plugin-resolution/
+cache:
+  directories:
+  - "$HOME/.gradle/caches/"
+  - "$HOME/.gradle/wrapper/"
+deploy:
+  provider: heroku
+  api_key:
+    secure: ikhf9ysp6b47ZUyzOM0Ck1W1HBunAUvrcJ0CPNFwEOPHhcZLknbibV604OCc7sNgpb2LIqcXIPjvcxoIIdB0+QuiTsAJi/nSdjNa0T5HD3qIvlQ83xIfMRFCWRRIox5DcSLuHdY7OYm2eJc9tajRwDWQd9eU2gWbBXR6AWiWcF/vvBrRk2jm/mNS6z7XVTgAskMrOOzNR4CKwo/MadQ2EBVkVHUSL1NEYL4/7Ryu/6CL/ZP8dcoOJaHlbgyq2zZuwr7/rFWyU1BjyFqOe88J5iXFCq+ryUw8BgzkXJNgBYoQG3VbaHFWJuZkwE7sO3bjXGcJstBKmAEuAPc1ui57XUllGd6PZdv589eRJ6heixWX9uxkvAX36//lxPDnmK1IQwpgpl8q/AgXwY+OsO1xBbYrR24iDhJIHdIBXhdUSktMVHCeoJs3OoPc2K5GX0H8QkwgLsROLAsgrvlsXpFLtdD3y/IofyA0YG0mX5mUtEIjYb8c9qqDfHzliAEqC27N2XAWw3W70y3apdCWWDN9dn+ohzFsSROCGlB5/wmTr35uyZEiyvEfGrOL+E/HOueJhdjq6jbKOkXqKTkpxhc26g2jjhcG1jCwB8gNDYMVLnatlymrg8Gj82+HhQaKyKOdERYxFpD6WdR4+2bSebr/nHv6UnfV7HAMVPkFOzroTyk=
+  app: backend
+  on:
+    repo: project-tenjin/backend
