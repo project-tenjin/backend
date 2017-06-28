@@ -22,7 +22,7 @@ public class WelcomeControllerTests {
     public void testExample() throws Exception {
         this.mvc.perform(get("/"))
                 .andExpect(status().isOk())
-                .andExpect(content().string("Hello World!"));
+                .andExpect(content().string("Hello World 2!"));
     }
 
 }
