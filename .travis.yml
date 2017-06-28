@@ -1,6 +1,6 @@
 language: java
 jdk:
-  - oraclejdk8
+- oraclejdk8
 before_cache:
 - rm -f  $HOME/.gradle/caches/modules-2/modules-2.lock
 - rm -fr $HOME/.gradle/caches/*/plugin-resolution/
@@ -9,11 +9,11 @@ cache:
   - "$HOME/.gradle/caches/"
   - "$HOME/.gradle/wrapper/"
 install:
-  - ./gradlew assemble --stacktrace
+- "./gradlew assemble --stacktrace"
 deploy:
   provider: heroku
   api_key:
-    secure: ikhf9ysp6b47ZUyzOM0Ck1W1HBunAUvrcJ0CPNFwEOPHhcZLknbibV604OCc7sNgpb2LIqcXIPjvcxoIIdB0+QuiTsAJi/nSdjNa0T5HD3qIvlQ83xIfMRFCWRRIox5DcSLuHdY7OYm2eJc9tajRwDWQd9eU2gWbBXR6AWiWcF/vvBrRk2jm/mNS6z7XVTgAskMrOOzNR4CKwo/MadQ2EBVkVHUSL1NEYL4/7Ryu/6CL/ZP8dcoOJaHlbgyq2zZuwr7/rFWyU1BjyFqOe88J5iXFCq+ryUw8BgzkXJNgBYoQG3VbaHFWJuZkwE7sO3bjXGcJstBKmAEuAPc1ui57XUllGd6PZdv589eRJ6heixWX9uxkvAX36//lxPDnmK1IQwpgpl8q/AgXwY+OsO1xBbYrR24iDhJIHdIBXhdUSktMVHCeoJs3OoPc2K5GX0H8QkwgLsROLAsgrvlsXpFLtdD3y/IofyA0YG0mX5mUtEIjYb8c9qqDfHzliAEqC27N2XAWw3W70y3apdCWWDN9dn+ohzFsSROCGlB5/wmTr35uyZEiyvEfGrOL+E/HOueJhdjq6jbKOkXqKTkpxhc26g2jjhcG1jCwB8gNDYMVLnatlymrg8Gj82+HhQaKyKOdERYxFpD6WdR4+2bSebr/nHv6UnfV7HAMVPkFOzroTyk=
+    secure: FQxkX/zTs450K2aOeOHq/5EBF776ty9v6UHlrllnyU8U3gks34EeLI0b/9qE41597G0CdeabngA2IJ2qKeICQMRkYgW3EGR7z2AEjxkYXK2bDq4s6iHqalcAtU5ek1ZNSP9poKKKVYLit3igPrhfFf+AkFw9OqU7DFiAZ9z+gWdUy0TwE0scx8sETjQqxdsRlTvhm3SpG4geLO6dQ3iLhFgvJpfQXFTy+t290XkVhp3vLnWFyvGWXNKH5+weSTiAcZUoPoD2DPfIFKhwH2z7ZYrk60T6vYMzjjHD1sNrZf3MusA1BeWec2IqZjR9yMUX7tACJq4yqWc87dTo7GJF98xqC3/E9pSIOpL9CQjcZvfwQuO05qYj3D2fwHZ1ly5De0vpxNU6ScUDGmtRF6cmEsxW3A6tL1SjwlNJQYvL1pe03XcNg0aXE3fiEtVf8gORjUCKkVGAEU/Jy23gHqakqVerI6wrWhN1SAFd9BK67qmdgdBFM5XaNITFQioviLfePl7LCkLgswSLeNBj0XQZY6wBPgmaPM9PIFYXbc4LPCZbtvVCZHbsV3HDag/+8bLj4tm106J4e1twmerUi4nl9uLlLsNja7X40LLUbOTtiXSNFO15ZGMOX3+0tFPeAhTzXr6r1XLgoCbUAeG4+mKya8kzf4U3onCXI/wnM6Y2aXs=
   app: backend
   on:
     repo: project-tenjin/backend
