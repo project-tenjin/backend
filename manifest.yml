@@ -1,0 +1,5 @@
+---
+applications:
+- name: tenjin-backend
+  path: build/libs/project-tenjin-1.0-SNAPSHOT.jar 
+  
