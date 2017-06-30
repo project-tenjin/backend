@@ -18,6 +18,7 @@ import java.util.stream.Collectors;
 @Service
 public class GoogleSheetsApi {
     private String SPREADSHEET_ID = "18vFpXVDYnMvpp0kdgnD8MW7NS-TLWWd6EtSUAi1tLMU";
+    private String CREDENTIALS_PATH = "src/main/resources/google_sheets_credentials.json";
 
     public List<String> getSheetNames() {
         Sheets sheetsClient = SheetsClient();
@@ -36,7 +37,7 @@ public class GoogleSheetsApi {
         GoogleCredential credential = null;
         HttpTransport httpTransport = null;
         try {
-            credential = GoogleCredential.fromStream(new FileInputStream("src/main/resources/credentials.json"))
+            credential = GoogleCredential.fromStream(new FileInputStream(CREDENTIALS_PATH))
                     .createScoped(SheetsScopes.all());
             httpTransport = GoogleNetHttpTransport.newTrustedTransport();
         } catch (GeneralSecurityException | IOException e) {

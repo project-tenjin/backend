@@ -33,6 +33,18 @@ public class CoursesRepositoryTest {
                             .isEqualTo(Arrays.asList("Course A", "Course B"));
                 });
             });
+
+            describe("when there are no tabs in the targeted spreadsheet", () -> {
+                beforeEach(() -> {
+                    given(this.googleSheetsApi.getSheetNames())
+                            .willReturn(Arrays.asList());
+                });
+
+                it("returns the tabs names", () -> {
+                    assertThat(this.coursesRepository.getCourses())
+                            .isEmpty();
+                });
+            });
         });
     });
 }}

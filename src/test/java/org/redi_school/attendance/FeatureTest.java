@@ -19,7 +19,7 @@ public class FeatureTest {
     int port;
 
     @Test
-    public void setup() throws Exception {
+    public void testListOfCoursesIsDisplayed() throws Exception {
         WebClient webClient = new WebClient();
         Page page = webClient.getPage("http://localhost:" + port + "/");
         assertThat(page.getWebResponse().getContentAsString()).contains("Chasing Unicorns");

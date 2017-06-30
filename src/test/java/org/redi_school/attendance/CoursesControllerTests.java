@@ -33,7 +33,7 @@ public class CoursesControllerTests {
         this.mvc.perform(get("/"))
                 .andExpect(status().isOk())
                 .andExpect(view().name("courseList"))
-                .andExpect(model().attribute("classes", Arrays.asList("class1", "class2")));
+                .andExpect(model().attribute("courses", Arrays.asList("class1", "class2")));
     }
 
 }
