@@ -5,8 +5,6 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 
-import java.util.List;
-
 @Controller
 public class CoursesController {
 
@@ -19,8 +17,7 @@ public class CoursesController {
 
     @GetMapping("/")
     String listCourses(Model model) {
-        List<String> courses = coursesRepository.getCourses();
-        model.addAttribute("courses", courses);
+        model.addAttribute("courses", coursesRepository.getCourses());
         return "courseList";
     }
 }
