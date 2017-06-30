@@ -5,6 +5,9 @@
 .gradle
 build
 
+# unencrypted credentials
+src/main/resources/google_sheets_credentials.json
+
 # Compiled class file
 *.class
 

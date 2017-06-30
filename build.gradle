@@ -27,8 +27,17 @@ repositories {
 
 dependencies {
     compile("org.springframework.boot:spring-boot-starter-web:${springBootVersion}")
+    compile("org.springframework.boot:spring-boot-starter-thymeleaf:${springBootVersion}")
+    compile 'com.google.api-client:google-api-client:1.22.0'
+    compile 'com.google.oauth-client:google-oauth-client-jetty:1.22.0'
+    compile 'com.google.apis:google-api-services-sheets:v4-rev478-1.22.0'
 
     testCompile('org.springframework.boot:spring-boot-starter-test')
+    testCompile('org.seleniumhq.selenium:htmlunit-driver:2.27')
+    testCompile('org.fluentlenium:fluentlenium-junit:3.2.0')
+    testCompile('org.fluentlenium:fluentlenium-assertj:3.2.0')
+    testCompile('xml-apis:xml-apis:1.4.01')
+    testCompile('com.mscharhag.oleaster:oleaster-runner:0.2.0')
 }
 
 task stage(dependsOn: ['build', 'clean'])
