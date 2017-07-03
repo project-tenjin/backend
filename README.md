@@ -33,7 +33,11 @@ To add new courses, add a new sheet at the bottom of Google Spreadsheet, by clic
 Give the newly created sheet the name of your new course. Copy & Paste the structure of an existing course onto your
 new sheet and adjust the data accordingly.
 
-### Additional Information
+## Managing Students
+Students need to be in row `B` of each course sheet. They have to start in column `B:4`. There can be as many students as required.
+Simply add a new student row to add a new student or remove a row entirely to remove the student.
+
+## Additional Information
 The first sheet, called "Attendance key" is ignored by default. Any other sheets will show up as a course name
 in the app.
 
