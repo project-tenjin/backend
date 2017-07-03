@@ -36,6 +36,18 @@ public class GoogleSheetsApi {
         }
     }
 
+    public List<List<Object>> getRange(String spreadsheetId, String sheetName, String range) {
+        Sheets sheetsClient = SheetsClient();
+        Sheets.Spreadsheets.Values.Get request = null;
+        try {
+            String namedRange = "'" + sheetName + "'!" + range;
+            request = sheetsClient.spreadsheets().values().get(spreadsheetId, namedRange);
+            return request.execute().getValues();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
     private Sheets SheetsClient() {
         GoogleCredential credential = null;
         HttpTransport httpTransport = null;

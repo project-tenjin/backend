@@ -29,6 +29,7 @@ public class FeatureTest extends FluentAdapter {
     @LocalServerPort
     private int port;
     private String COURSE_NAME = "Chasing Unicorns";
+    private String OTHER_COURSE_NAME = "IoT";
 
     @BeforeClass
     public static void setupClass() {
@@ -58,6 +59,7 @@ public class FeatureTest extends FluentAdapter {
     public void testListOfCoursesIsDisplayed() throws Exception {
         goTo("http://localhost:" + port + "/");
         assertThat($("ul").text()).contains(COURSE_NAME);
+        assertThat($("ul").text()).contains(OTHER_COURSE_NAME);
     }
 
     @Test
@@ -65,5 +67,7 @@ public class FeatureTest extends FluentAdapter {
         goTo("http://localhost:" + port + "/");
         find(By.xpath("//a[text()='Chasing Unicorns']")).click();
         assertThat($("h1#courseName").text()).isEqualTo(COURSE_NAME);
+        assertThat($("ul").text()).contains("Anas");
+        assertThat($("ul").text()).contains("Ahmad");
     }
 }

@@ -1,10 +1,13 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
 <head>
-    <meta charset="UTF-8" />
-    <title>${course.name}</title>
+    <meta charset="UTF-8"/>
+    <title th:text="${course.name}" />
 </head>
 <body>
-    <h1 id="courseName" th:text="${course.name}" />
+<h1 id="courseName" th:text="${course.name}"/>
+<ul>
+    <li th:each="student : ${students}" th:text="${student}" />
+</ul>
 </body>
 </html>

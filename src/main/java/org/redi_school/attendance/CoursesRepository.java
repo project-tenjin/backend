@@ -15,6 +15,8 @@ public class CoursesRepository {
     private final Environment environment;
     private GoogleSheetsApi googleSheetsApi;
     private String spreadsheetId;
+    private String STUDENTS_COLUMN_RANGE = "B:B";
+
 
     @Autowired
     public CoursesRepository(GoogleSheetsApi googleSheetsApi, Environment environment) {
@@ -30,4 +32,11 @@ public class CoursesRepository {
                 .collect(Collectors.toList());
     }
 
+    public List<String> getStudentsForCourse(String courseId) {
+        List<List<Object>> studentsColumn = this.googleSheetsApi.getRange(spreadsheetId, courseId, STUDENTS_COLUMN_RANGE);
+        return studentsColumn.stream()
+                .skip(3)
+                .map((row) -> row.size() == 0 ? "" : row.get(0).toString())
+                .collect(Collectors.toList());
+    }
 }

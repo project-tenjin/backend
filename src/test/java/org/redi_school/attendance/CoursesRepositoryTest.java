@@ -29,8 +29,8 @@ public class CoursesRepositoryTest {
         });
 
         describe("fetching information from the courses Google spreadsheet", () -> {
-            describe("when there are tabs in the targeted spreadsheet", () -> {
-                it("returns the tabs names", () -> {
+            describe("when there are sheets in the targeted spreadsheet", () -> {
+                it("returns the sheet names", () -> {
                     given(this.googleSheetsApi.getSheets(spreadsheetId))
                             .willReturn(Arrays.asList(new Sheet(0, "Course A"), new Sheet(0, "Course B")));
 
@@ -45,15 +45,31 @@ public class CoursesRepositoryTest {
                     assertThat(this.coursesRepository.getCourses())
                             .isEqualTo(Arrays.asList(new Sheet(0, "Course A"), new Sheet(0, "Course B")));
                 });
+
+                describe("when there are students for a tab", () -> {
+                    it("returns them", () -> {
+                        String courseName = "Course 1";
+                        given(this.googleSheetsApi.getRange(spreadsheetId, courseName, "B:B"))
+                                .willReturn(Arrays.asList(
+                                        Arrays.asList(""),
+                                        Arrays.asList(""),
+                                        Arrays.asList("STUDENT"),
+                                        Arrays.asList("Student 1"),
+                                        Arrays.asList("Student 2")));
+
+                        assertThat(this.coursesRepository.getStudentsForCourse(courseName))
+                                .isEqualTo(Arrays.asList("Student 1", "Student 2"));
+                    });
+                });
             });
 
-            describe("when there are no tabs in the targeted spreadsheet", () -> {
+            describe("when there are no sheets in the targeted spreadsheet", () -> {
                 beforeEach(() -> {
                     given(this.googleSheetsApi.getSheets(spreadsheetId))
                             .willReturn(Arrays.asList());
                 });
 
-                it("returns the tabs names", () -> {
+                it("returns the sheet names", () -> {
                     assertThat(this.coursesRepository.getCourses())
                             .isEmpty();
                 });

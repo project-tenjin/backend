@@ -33,6 +33,7 @@ public class CoursesController {
                 .filter((Sheet course) -> course.getId() == id)
                 .findFirst().get();
         model.addAttribute("course", currentCourse);
+        model.addAttribute("students", coursesRepository.getStudentsForCourse(currentCourse.getName()));
         return "courseDetail";
     }
 

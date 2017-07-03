@@ -39,10 +39,15 @@ public class CoursesControllerTests {
     @Test
     public void testRenderCourseDetails() throws Exception {
         given(coursesRepository.getCourses()).willReturn(Arrays.asList(new Sheet(0, "class1"), new Sheet(1, "class2")));
+        given(coursesRepository.getStudentsForCourse("class2")).willReturn(Arrays.asList("Student-name", "Student-other-name"));
+
         this.mvc.perform(get("/courses/1"))
                 .andExpect(status().isOk())
                 .andExpect(view().name("courseDetail"))
-                .andExpect(model().attribute("course", new Sheet(1, "class2")));
+                .andExpect(model().attribute("course", new Sheet(1, "class2")))
+                .andExpect(model().attribute("students", Arrays.asList(
+                        "Student-name",
+                        "Student-other-name")));
     }
 
     @Test
