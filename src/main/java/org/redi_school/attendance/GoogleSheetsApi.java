@@ -7,10 +7,13 @@ import com.google.api.client.json.jackson2.JacksonFactory;
 import com.google.api.services.sheets.v4.Sheets;
 import com.google.api.services.sheets.v4.SheetsScopes;
 import com.google.api.services.sheets.v4.model.Sheet;
+import org.springframework.core.io.ClassPathResource;
+import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Service;
 
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.security.GeneralSecurityException;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -18,7 +21,7 @@ import java.util.stream.Collectors;
 @Service
 public class GoogleSheetsApi {
     private String SPREADSHEET_ID = "18vFpXVDYnMvpp0kdgnD8MW7NS-TLWWd6EtSUAi1tLMU";
-    private String CREDENTIALS_PATH = "src/main/resources/google_sheets_credentials.json";
+    private String CREDENTIALS_PATH = "./google_sheets_credentials.json";
 
     public List<String> getSheetNames() {
         Sheets sheetsClient = SheetsClient();
@@ -37,7 +40,9 @@ public class GoogleSheetsApi {
         GoogleCredential credential = null;
         HttpTransport httpTransport = null;
         try {
-            credential = GoogleCredential.fromStream(new FileInputStream(CREDENTIALS_PATH))
+            Resource resource = new ClassPathResource(CREDENTIALS_PATH);
+            InputStream resourceInputStream = resource.getInputStream();
+            credential = GoogleCredential.fromStream(resourceInputStream)
                     .createScoped(SheetsScopes.all());
             httpTransport = GoogleNetHttpTransport.newTrustedTransport();
         } catch (GeneralSecurityException | IOException e) {
