@@ -44,4 +44,11 @@ public class CoursesControllerTests {
                 .andExpect(view().name("courseDetail"))
                 .andExpect(model().attribute("course", new Sheet(1, "class2")));
     }
+
+    @Test
+    public void testRenderCourseDetailsForNonExistingCourse() throws Exception {
+        given(coursesRepository.getCourses()).willReturn(Arrays.asList(new Sheet(0, "class1"), new Sheet(1, "class2")));
+        this.mvc.perform(get("/courses/2"))
+                .andExpect(status().isNotFound());
+    }
 }
