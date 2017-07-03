@@ -9,7 +9,7 @@ import java.util.stream.Collectors;
 @Service
 public class CoursesRepository {
 
-    private static final String NON_COURSE_SHEET_NAME = "Attendance key";
+    private static final String NON_COURSE_SHEET_NAME = "attendance key";
     private GoogleSheetsApi googleSheetsApi;
 
     @Autowired
@@ -20,7 +20,7 @@ public class CoursesRepository {
     public List<String> getCourses() {
         List<String> sheetNames = this.googleSheetsApi.getSheetNames();
         return sheetNames.stream()
-                .filter((name) -> (!name.equals(NON_COURSE_SHEET_NAME)))
+                .filter((name) -> (!name.toLowerCase().equals(NON_COURSE_SHEET_NAME.toLowerCase())))
                 .collect(Collectors.toList());
     }
 
