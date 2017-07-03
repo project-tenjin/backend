@@ -12,12 +12,6 @@ before_install:
 - openssl aes-256-cbc -K $encrypted_428d7cee0894_key -iv $encrypted_428d7cee0894_iv -in src/main/resources/google_sheets_credentials.json.enc -out src/main/resources/google_sheets_credentials.json -d
 install:
 - "./gradlew assemble --stacktrace"
-before_script:
-- "export DISPLAY=:99.0"
-- "sh -e /etc/init.d/xvfb start"
-- "which google-chrome"
-- "uptime"
-- sleep 3
 deploy:
   provider: cloudfoundry
   api: https://api.run.pivotal.io
