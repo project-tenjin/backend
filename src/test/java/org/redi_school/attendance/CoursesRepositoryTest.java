@@ -23,12 +23,18 @@ public class CoursesRepositoryTest {
 
         describe("fetching information from the courses Google spreadsheet", () -> {
             describe("when there are tabs in the targeted spreadsheet", () -> {
-                beforeEach(() -> {
+                it("returns the tabs names", () -> {
                     given(this.googleSheetsApi.getSheetNames())
                             .willReturn(Arrays.asList("Course A", "Course B"));
+
+                    assertThat(this.coursesRepository.getCourses())
+                            .isEqualTo(Arrays.asList("Course A", "Course B"));
                 });
 
-                it("returns the tabs names", () -> {
+                it("filters out non-course sheets", () -> {
+                    given(this.googleSheetsApi.getSheetNames())
+                            .willReturn(Arrays.asList("Attendance key", "Course A", "Course B"));
+
                     assertThat(this.coursesRepository.getCourses())
                             .isEqualTo(Arrays.asList("Course A", "Course B"));
                 });
