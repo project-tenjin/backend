@@ -1,4 +1,4 @@
-# ReDI Attendance Tracking (Codename Tenjin)
+# ReDI Attendance Tracking (Codename Tenjin) ![Travis Build](https://travis-ci.org/project-tenjin/backend.svg?branch=master)
 Java Spring backend for project Tenjin
 
 # System Requirements
