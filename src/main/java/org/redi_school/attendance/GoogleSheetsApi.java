@@ -11,7 +11,6 @@ import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Service;
 
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.security.GeneralSecurityException;
@@ -20,14 +19,13 @@ import java.util.stream.Collectors;
 
 @Service
 public class GoogleSheetsApi {
-    private String SPREADSHEET_ID = "18vFpXVDYnMvpp0kdgnD8MW7NS-TLWWd6EtSUAi1tLMU";
     private String CREDENTIALS_PATH = "./google_sheets_credentials.json";
 
-    public List<String> getSheetNames() {
+    public List<String> getSheetNames(String sheetId) {
         Sheets sheetsClient = SheetsClient();
         Sheets.Spreadsheets.Get request = null;
         try {
-            request = sheetsClient.spreadsheets().get(SPREADSHEET_ID);
+            request = sheetsClient.spreadsheets().get(sheetId);
             return request.execute().getSheets().stream()
                     .map((Sheet sheet) -> sheet.getProperties().getTitle())
                     .collect(Collectors.toList());
