@@ -6,7 +6,9 @@
 </head>
 <body>
 <ul>
-    <li th:each="course : ${courses}" th:text="${course}" />
+    <li th:each="course : ${courses}">
+        <a th:href="'/courses/' + ${course.id}" th:text="${course.name}" />
+    </li>
 </ul>
 </body>
 </html>

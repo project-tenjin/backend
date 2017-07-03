@@ -21,13 +21,15 @@ import java.util.stream.Collectors;
 public class GoogleSheetsApi {
     private String CREDENTIALS_PATH = "./google_sheets_credentials.json";
 
-    public List<String> getSheetNames(String sheetId) {
+    public List<org.redi_school.attendance.Sheet> getSheets(String spreadsheetId) {
         Sheets sheetsClient = SheetsClient();
         Sheets.Spreadsheets.Get request = null;
         try {
-            request = sheetsClient.spreadsheets().get(sheetId);
+            request = sheetsClient.spreadsheets().get(spreadsheetId);
             return request.execute().getSheets().stream()
-                    .map((Sheet sheet) -> sheet.getProperties().getTitle())
+                    .map((Sheet sheet) -> new org.redi_school.attendance.Sheet(
+                            sheet.getProperties().getSheetId(),
+                            sheet.getProperties().getTitle()))
                     .collect(Collectors.toList());
         } catch (IOException e) {
             throw new RuntimeException(e);

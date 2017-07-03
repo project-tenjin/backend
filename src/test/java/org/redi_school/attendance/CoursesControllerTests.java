@@ -29,11 +29,19 @@ public class CoursesControllerTests {
 
     @Test
     public void testRendersCourses() throws Exception {
-        given(coursesRepository.getCourses()).willReturn(Arrays.asList("class1", "class2"));
+        given(coursesRepository.getCourses()).willReturn(Arrays.asList(new Sheet(0, "class1"), new Sheet(0, "class2")));
         this.mvc.perform(get("/"))
                 .andExpect(status().isOk())
                 .andExpect(view().name("courseList"))
-                .andExpect(model().attribute("courses", Arrays.asList("class1", "class2")));
+                .andExpect(model().attribute("courses", Arrays.asList(new Sheet(0, "class1"), new Sheet(0, "class2"))));
     }
 
+    @Test
+    public void testRenderCourseDetails() throws Exception {
+        given(coursesRepository.getCourses()).willReturn(Arrays.asList(new Sheet(0, "class1"), new Sheet(1, "class2")));
+        this.mvc.perform(get("/courses/1"))
+                .andExpect(status().isOk())
+                .andExpect(view().name("courseDetail"))
+                .andExpect(model().attribute("course", new Sheet(1, "class2")));
+    }
 }

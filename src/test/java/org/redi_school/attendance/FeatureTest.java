@@ -7,6 +7,7 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.phantomjs.PhantomJSDriver;
 import org.openqa.selenium.phantomjs.PhantomJSDriverService;
@@ -27,6 +28,7 @@ public class FeatureTest extends FluentAdapter {
 
     @LocalServerPort
     private int port;
+    private String COURSE_NAME = "Chasing Unicorns";
 
     @BeforeClass
     public static void setupClass() {
@@ -55,6 +57,13 @@ public class FeatureTest extends FluentAdapter {
     @Test
     public void testListOfCoursesIsDisplayed() throws Exception {
         goTo("http://localhost:" + port + "/");
-        assertThat($("ul").text()).contains("Chasing Unicorns");
+        assertThat($("ul").text()).contains(COURSE_NAME);
+    }
+
+    @Test
+    public void testListOfStudentsIsDisplayedOnCoursePage() throws Exception {
+        goTo("http://localhost:" + port + "/");
+        find(By.xpath("//a[text()='Chasing Unicorns']")).click();
+        assertThat($("h1#courseName").text()).isEqualTo(COURSE_NAME);
     }
 }
