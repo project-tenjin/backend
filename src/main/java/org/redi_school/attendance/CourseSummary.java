@@ -1,10 +1,10 @@
 package org.redi_school.attendance;
 
-public class Course {
+public class CourseSummary {
     private int id;
     private String name;
 
-    public Course(int id, String name) {
+    public CourseSummary(int id, String name) {
         this.id = id;
         this.name = name;
     }
@@ -30,10 +30,10 @@ public class Course {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
 
-        Course course = (Course) o;
+        CourseSummary courseSummary = (CourseSummary) o;
 
-        if (id != course.id) return false;
-        return name != null ? name.equals(course.name) : course.name == null;
+        if (id != courseSummary.id) return false;
+        return name != null ? name.equals(courseSummary.name) : courseSummary.name == null;
     }
 
     @Override
@@ -45,7 +45,7 @@ public class Course {
 
     @Override
     public String toString() {
-        return "Course{" +
+        return "CourseSummary{" +
                 "id=" + id +
                 ", name='" + name + '\'' +
                 '}';

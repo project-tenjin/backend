@@ -2,13 +2,15 @@
 <html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
 <head>
     <meta charset="UTF-8"/>
-    <title th:text="${course.name}"/>
+    <title th:text="${courseDetails.name}"/>
 </head>
 <body>
-<h1 id="courseName" th:text="${course.name}"/>
+<h1 id="courseName" th:text="${courseDetails.name}"/>
 <form>
+    <select>
+    </select>
     <ul>
-        <li th:each="student : ${students}">
+        <li th:each="student : ${courseDetails.students}">
             <div th:text="${student}"/>
             <div>
                 <input type="radio" th:name="${student}+'-attendance'" value="P"/>

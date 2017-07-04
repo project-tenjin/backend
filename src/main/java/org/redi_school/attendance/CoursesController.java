@@ -29,11 +29,11 @@ public class CoursesController {
 
     @GetMapping("/courses/{id}")
     String showCourse(@PathVariable int id, Model model) {
-        Course currentCourse = coursesRepository.getCourses().stream()
-                .filter((Course course) -> course.getId() == id)
+        CourseSummary currentCourseSummary = coursesRepository.getCourses().stream()
+                .filter((CourseSummary course) -> course.getId() == id)
                 .findFirst().get();
-        model.addAttribute("course", currentCourse);
-        model.addAttribute("students", coursesRepository.getStudentsForCourse(currentCourse.getName()));
+        CourseDetails courseDetails = coursesRepository.getCourseDetails(currentCourseSummary.getName());
+        model.addAttribute("courseDetails", courseDetails);
         return "courseDetail";
     }
 

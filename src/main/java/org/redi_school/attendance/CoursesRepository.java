@@ -12,12 +12,12 @@ import java.util.stream.Collectors;
 public class CoursesRepository {
 
     private static final String NON_COURSE_SHEET_NAME = "attendance key";
+    private static String ALL_DATA_RANGE = "A:ZZ";
+    private static int HEADER_ROW_COUNT = 3;
 
     private final Environment environment;
     private GoogleSheetsApi googleSheetsApi;
     private String spreadsheetId;
-    private String STUDENTS_COLUMN_RANGE = "B:B";
-
 
     @Autowired
     public CoursesRepository(GoogleSheetsApi googleSheetsApi, Environment environment) {
@@ -26,23 +26,31 @@ public class CoursesRepository {
         spreadsheetId = this.environment.getProperty("google.spreadsheet.id");
     }
 
-    public List<Course> getCourses() {
+    public List<CourseSummary> getCourses() {
         List<Sheet> sheets = this.googleSheetsApi.getSheets(spreadsheetId);
         return sheets.stream()
                 .filter((sheet) -> (!sheet.getProperties().getTitle().toLowerCase()
                         .equals(NON_COURSE_SHEET_NAME.toLowerCase())))
-                .map((sheet) -> new Course(
+                .map((sheet) -> new CourseSummary(
                         sheet.getProperties().getSheetId(),
                         sheet.getProperties().getTitle()
                 ))
                 .collect(Collectors.toList());
     }
 
-    public List<String> getStudentsForCourse(String courseId) {
-        List<List<Object>> studentsColumn = this.googleSheetsApi.getRange(spreadsheetId, courseId, STUDENTS_COLUMN_RANGE);
-        return studentsColumn.stream()
-                .skip(3)
-                .map((row) -> row.size() == 0 ? "" : row.get(0).toString())
-                .collect(Collectors.toList());
+    public CourseDetails getCourseDetails(String courseName) {
+        List<List<Object>> sheetData = this.googleSheetsApi.getRange(spreadsheetId, courseName, ALL_DATA_RANGE);
+
+        List<String> students = getStudentNames(sheetData);
+
+        return new CourseDetails(courseName, students);
+    }
+
+    private List<String> getStudentNames(List<List<Object>> sheetData) {
+        return sheetData.stream()
+                    .skip(HEADER_ROW_COUNT)
+                    .map((row) -> row.get(1).toString())
+                    .filter((student) -> !student.equals(""))
+                    .collect(Collectors.toList());
     }
 }

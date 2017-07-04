@@ -29,30 +29,30 @@ public class CoursesControllerTests {
 
     @Test
     public void testRendersCourses() throws Exception {
-        given(coursesRepository.getCourses()).willReturn(Arrays.asList(new Course(0, "class1"), new Course(0, "class2")));
+        given(coursesRepository.getCourses()).willReturn(Arrays.asList(new CourseSummary(0, "class1"), new CourseSummary(0, "class2")));
         this.mvc.perform(get("/"))
                 .andExpect(status().isOk())
                 .andExpect(view().name("courseList"))
-                .andExpect(model().attribute("courses", Arrays.asList(new Course(0, "class1"), new Course(0, "class2"))));
+                .andExpect(model().attribute("courses", Arrays.asList(new CourseSummary(0, "class1"), new CourseSummary(0, "class2"))));
     }
 
     @Test
     public void testRenderCourseDetails() throws Exception {
-        given(coursesRepository.getCourses()).willReturn(Arrays.asList(new Course(0, "class1"), new Course(1, "class2")));
-        given(coursesRepository.getStudentsForCourse("class2")).willReturn(Arrays.asList("Student-name", "Student-other-name"));
+        given(coursesRepository.getCourses()).willReturn(Arrays.asList(new CourseSummary(0, "class1"), new CourseSummary(1, "class2")));
+        given(coursesRepository.getCourseDetails("class2")).willReturn(new CourseDetails("class2", Arrays.asList("Student-name", "Student-other-name")));
 
         this.mvc.perform(get("/courses/1"))
                 .andExpect(status().isOk())
                 .andExpect(view().name("courseDetail"))
-                .andExpect(model().attribute("course", new Course(1, "class2")))
-                .andExpect(model().attribute("students", Arrays.asList(
+                .andExpect(model().attribute("courseDetails", new CourseDetails("class2", Arrays.asList(
                         "Student-name",
-                        "Student-other-name")));
+                        "Student-other-name")))
+                );
     }
 
     @Test
     public void testRenderCourseDetailsForNonExistingCourse() throws Exception {
-        given(coursesRepository.getCourses()).willReturn(Arrays.asList(new Course(0, "class1"), new Course(1, "class2")));
+        given(coursesRepository.getCourses()).willReturn(Arrays.asList(new CourseSummary(0, "class1"), new CourseSummary(1, "class2")));
         this.mvc.perform(get("/courses/2"))
                 .andExpect(status().isNotFound());
     }
