@@ -15,22 +15,17 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.security.GeneralSecurityException;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 public class GoogleSheetsApi {
     private String CREDENTIALS_PATH = "./google_sheets_credentials.json";
 
-    public List<org.redi_school.attendance.Sheet> getSheets(String spreadsheetId) {
+    public List<Sheet> getSheets(String spreadsheetId) {
         Sheets sheetsClient = SheetsClient();
         Sheets.Spreadsheets.Get request = null;
         try {
             request = sheetsClient.spreadsheets().get(spreadsheetId);
-            return request.execute().getSheets().stream()
-                    .map((Sheet sheet) -> new org.redi_school.attendance.Sheet(
-                            sheet.getProperties().getSheetId(),
-                            sheet.getProperties().getTitle()))
-                    .collect(Collectors.toList());
+            return request.execute().getSheets();
         } catch (IOException e) {
             throw new RuntimeException(e);
         }

@@ -1,5 +1,6 @@
 package org.redi_school.attendance;
 
+import com.google.api.services.sheets.v4.model.Sheet;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Service;
@@ -25,10 +26,15 @@ public class CoursesRepository {
         spreadsheetId = this.environment.getProperty("google.spreadsheet.id");
     }
 
-    public List<Sheet> getCourses() {
-        List<Sheet> sheetNames = this.googleSheetsApi.getSheets(spreadsheetId);
-        return sheetNames.stream()
-                .filter((sheet) -> (!sheet.getName().toLowerCase().equals(NON_COURSE_SHEET_NAME.toLowerCase())))
+    public List<Course> getCourses() {
+        List<Sheet> sheets = this.googleSheetsApi.getSheets(spreadsheetId);
+        return sheets.stream()
+                .filter((sheet) -> (!sheet.getProperties().getTitle().toLowerCase()
+                        .equals(NON_COURSE_SHEET_NAME.toLowerCase())))
+                .map((sheet) -> new Course(
+                        sheet.getProperties().getSheetId(),
+                        sheet.getProperties().getTitle()
+                ))
                 .collect(Collectors.toList());
     }
 

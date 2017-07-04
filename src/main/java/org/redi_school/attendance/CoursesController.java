@@ -29,8 +29,8 @@ public class CoursesController {
 
     @GetMapping("/courses/{id}")
     String showCourse(@PathVariable int id, Model model) {
-        Sheet currentCourse = coursesRepository.getCourses().stream()
-                .filter((Sheet course) -> course.getId() == id)
+        Course currentCourse = coursesRepository.getCourses().stream()
+                .filter((Course course) -> course.getId() == id)
                 .findFirst().get();
         model.addAttribute("course", currentCourse);
         model.addAttribute("students", coursesRepository.getStudentsForCourse(currentCourse.getName()));

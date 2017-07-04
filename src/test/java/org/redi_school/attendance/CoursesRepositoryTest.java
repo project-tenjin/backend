@@ -1,5 +1,7 @@
 package org.redi_school.attendance;
 
+import com.google.api.services.sheets.v4.model.Sheet;
+import com.google.api.services.sheets.v4.model.SheetProperties;
 import com.mscharhag.oleaster.runner.OleasterRunner;
 import org.junit.runner.RunWith;
 import org.springframework.mock.env.MockEnvironment;
@@ -16,6 +18,16 @@ public class CoursesRepositoryTest {
     CoursesRepository coursesRepository;
     GoogleSheetsApi googleSheetsApi;
     MockEnvironment mockEnvironment;
+
+    Sheet buildSheet(int id, String name) {
+        Sheet sheet = new Sheet();
+        SheetProperties properties = new SheetProperties();
+        properties.setSheetId(id);
+        properties.setTitle(name);
+        sheet.setProperties(properties);
+
+        return sheet;
+    }
 {
     describe("CoursesRepository", () -> {
         final String spreadsheetId = "meehp";
@@ -32,18 +44,18 @@ public class CoursesRepositoryTest {
             describe("when there are sheets in the targeted spreadsheet", () -> {
                 it("returns the sheet names", () -> {
                     given(this.googleSheetsApi.getSheets(spreadsheetId))
-                            .willReturn(Arrays.asList(new Sheet(0, "Course A"), new Sheet(0, "Course B")));
+                            .willReturn(Arrays.asList(buildSheet(0, "Course A"), buildSheet(1, "Course B")));
 
                     assertThat(this.coursesRepository.getCourses())
-                            .isEqualTo(Arrays.asList(new Sheet(0, "Course A"), new Sheet(0, "Course B")));
+                            .isEqualTo(Arrays.asList(new Course(0, "Course A"), new Course(1, "Course B")));
                 });
 
                 it("filters out non-course sheets", () -> {
                     given(this.googleSheetsApi.getSheets(spreadsheetId))
-                            .willReturn(Arrays.asList(new Sheet(0, "Attendance key"), new Sheet(0, "Course A"), new Sheet(0, "Course B")));
+                            .willReturn(Arrays.asList(buildSheet(0, "Attendance key"), buildSheet(1, "Course A"), buildSheet(2, "Course B")));
 
                     assertThat(this.coursesRepository.getCourses())
-                            .isEqualTo(Arrays.asList(new Sheet(0, "Course A"), new Sheet(0, "Course B")));
+                            .isEqualTo(Arrays.asList(new Course(1, "Course A"), new Course(2, "Course B")));
                 });
 
                 describe("when there are students for a tab", () -> {

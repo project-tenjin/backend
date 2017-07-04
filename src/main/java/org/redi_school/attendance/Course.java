@@ -1,10 +1,10 @@
 package org.redi_school.attendance;
 
-public class Sheet {
+public class Course {
     private int id;
     private String name;
 
-    public Sheet(int id, String name) {
+    public Course(int id, String name) {
         this.id = id;
         this.name = name;
     }
@@ -30,10 +30,10 @@ public class Sheet {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
 
-        Sheet sheet = (Sheet) o;
+        Course course = (Course) o;
 
-        if (id != sheet.id) return false;
-        return name != null ? name.equals(sheet.name) : sheet.name == null;
+        if (id != course.id) return false;
+        return name != null ? name.equals(course.name) : course.name == null;
     }
 
     @Override
@@ -45,7 +45,7 @@ public class Sheet {
 
     @Override
     public String toString() {
-        return "Sheet{" +
+        return "Course{" +
                 "id=" + id +
                 ", name='" + name + '\'' +
                 '}';
