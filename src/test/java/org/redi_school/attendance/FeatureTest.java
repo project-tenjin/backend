@@ -29,7 +29,7 @@ public class FeatureTest extends FluentAdapter {
     @LocalServerPort
     private int port;
     private String COURSE_NAME = "Chasing Unicorns";
-    private String OTHER_COURSE_NAME = "IoT";
+    private String OTHER_COURSE_NAME = "App Design";
 
     @BeforeClass
     public static void setupClass() {
@@ -58,6 +58,7 @@ public class FeatureTest extends FluentAdapter {
     @Test
     public void testListOfCoursesIsDisplayed() throws Exception {
         goTo("http://localhost:" + port + "/");
+
         assertThat($("ul").text()).contains(COURSE_NAME);
         assertThat($("ul").text()).contains(OTHER_COURSE_NAME);
     }
@@ -66,8 +67,21 @@ public class FeatureTest extends FluentAdapter {
     public void testListOfStudentsIsDisplayedOnCoursePage() throws Exception {
         goTo("http://localhost:" + port + "/");
         find(By.xpath("//a[text()='Chasing Unicorns']")).click();
+
         assertThat($("h1#courseName").text()).isEqualTo(COURSE_NAME);
-        assertThat($("ul").text()).contains("Anas");
-        assertThat($("ul").text()).contains("Ahmad");
+        assertThat($("li:first-of-type>div:first-of-type").text()).isEqualTo("Student 1");
+        assertThat($("li:last-of-type>div:first-of-type").text()).isEqualTo("Student 9");
+    }
+
+    @Test
+    public void testFormForAttendanceStatusIsDisplayedPerStudentOnCoursePage() throws Exception {
+        goTo("http://localhost:" + port + "/");
+        find(By.xpath("//a[text()='Chasing Unicorns']")).click();
+
+        assertThat($("form")).isNotEmpty();
+        assertThat($("li:first-of-type>div>input[type=radio]:nth-of-type(1)").value()).contains("P");
+        assertThat($("li:first-of-type>div>input[type=radio]:nth-of-type(2)").value()).contains("L");
+        assertThat($("li:first-of-type>div>input[type=radio]:nth-of-type(3)").value()).contains("U");
+        assertThat($("li:first-of-type>div>input[type=radio]:nth-of-type(4)").value()).contains("E");
     }
 }
