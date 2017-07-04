@@ -8,6 +8,7 @@
 <h1 id="courseName" th:text="${courseDetails.name}"/>
 <form>
     <select>
+        <option th:each="date : ${courseDetails.dates}" th:text="${date}"/>
     </select>
     <ul>
         <li th:each="student : ${courseDetails.students}">

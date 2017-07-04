@@ -38,16 +38,14 @@ public class CoursesControllerTests {
 
     @Test
     public void testRenderCourseDetails() throws Exception {
+        CourseDetails returnedCourseDetails = new CourseDetails("class2", Arrays.asList("Student-name", "Student-other-name"), Arrays.asList("4/24", "4/27"));
         given(coursesRepository.getCourses()).willReturn(Arrays.asList(new CourseSummary(0, "class1"), new CourseSummary(1, "class2")));
-        given(coursesRepository.getCourseDetails("class2")).willReturn(new CourseDetails("class2", Arrays.asList("Student-name", "Student-other-name")));
+        given(coursesRepository.getCourseDetails("class2")).willReturn(returnedCourseDetails);
 
         this.mvc.perform(get("/courses/1"))
                 .andExpect(status().isOk())
                 .andExpect(view().name("courseDetail"))
-                .andExpect(model().attribute("courseDetails", new CourseDetails("class2", Arrays.asList(
-                        "Student-name",
-                        "Student-other-name")))
-                );
+                .andExpect(model().attribute("courseDetails", returnedCourseDetails));
     }
 
     @Test

@@ -84,4 +84,14 @@ public class FeatureTest extends FluentAdapter {
         assertThat($("li:first-of-type>div>input[type=radio]:nth-of-type(3)").value()).contains("U");
         assertThat($("li:first-of-type>div>input[type=radio]:nth-of-type(4)").value()).contains("E");
     }
+
+    @Test
+    public void testDatePickerIsDisplayedOnCoursePageWithDatesFromSpreadsheet() throws Exception {
+        goTo("http://localhost:" + port + "/");
+        find(By.xpath("//a[text()='Chasing Unicorns']")).click();
+
+        assertThat($("select")).isNotEmpty();
+        assertThat($("select > option:first-of-type").text()).isEqualTo("4/24");
+        assertThat($("select > option:last-of-type").text()).isEqualTo("7/13");
+    }
 }

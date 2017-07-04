@@ -34,8 +34,11 @@ Give the newly created sheet the name of your new course. Copy & Paste the struc
 new sheet and adjust the data accordingly.
 
 ## Managing Students
-Students need to be in row `B` of each course sheet. They have to start in column `B:4`. There can be as many students as required.
+Students **must** be in row `B` of each course sheet. They **must** start in column `B:4`. There can be as many students as required.
 Simply add a new student row to add a new student or remove a row entirely to remove the student.
+
+## Managing Course Dates
+The first date of the course **must** start at `C:2` and the last three cells in the `C` row **must**  contain `Late`, `Excused absence` and `Unexcused absence`.
 
 ## Additional Information
 The first sheet, called "Attendance key" is ignored by default. Any other sheets will show up as a course name

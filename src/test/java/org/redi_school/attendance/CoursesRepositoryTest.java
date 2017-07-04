@@ -7,6 +7,7 @@ import org.junit.runner.RunWith;
 import org.springframework.mock.env.MockEnvironment;
 
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 import static com.mscharhag.oleaster.runner.StaticRunnerSupport.*;
@@ -74,23 +75,24 @@ public class CoursesRepositoryTest {
         });
 
         describe("course details", () -> {
-            it("returns details about a course", () -> {
+            it("returns details about a course and strips out non-date fields from my dates", () -> {
                 String courseName = "CourseSummary 1";
                 List<String> students = Arrays.asList("Student 1", "Student 2");
+                List<String> dates = Arrays.asList("3/31", "4/12", "5/18");
 
                 List<List<Object>> sheetData = Arrays.asList(
                         Arrays.asList(""),
-                        Arrays.asList(""), // Dates
+                        Arrays.asList("", "", dates.get(0), dates.get(1), dates.get(2), "Late", "Excused absence", "Unexcused absence"),
                         Arrays.asList(""), // Day of week
-                        Arrays.asList("", "Student 1"),
-                        Arrays.asList("", "Student 2")
+                        Arrays.asList("", students.get(0)),
+                        Arrays.asList("", students.get(1))
                 );
 
                 given(this.googleSheetsApi.getRange(spreadsheetId, courseName, "A:ZZ"))
                         .willReturn(sheetData);
 
                 assertThat(this.coursesRepository.getCourseDetails(courseName))
-                        .isEqualTo(new CourseDetails(courseName, students));
+                        .isEqualTo(new CourseDetails(courseName, students, dates));
             });
 
             it("returns details about a course and filters out empty student rows", () -> {
@@ -111,7 +113,7 @@ public class CoursesRepositoryTest {
                         .willReturn(sheetData);
 
                 assertThat(this.coursesRepository.getCourseDetails(courseName))
-                        .isEqualTo(new CourseDetails(courseName, students));
+                        .isEqualTo(new CourseDetails(courseName, students, Collections.emptyList()));
             });
         });
     });
