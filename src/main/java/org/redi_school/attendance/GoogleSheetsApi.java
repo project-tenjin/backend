@@ -7,6 +7,7 @@ import com.google.api.client.json.jackson2.JacksonFactory;
 import com.google.api.services.sheets.v4.Sheets;
 import com.google.api.services.sheets.v4.SheetsScopes;
 import com.google.api.services.sheets.v4.model.Sheet;
+import com.google.api.services.sheets.v4.model.ValueRange;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Service;
@@ -18,6 +19,7 @@ import java.util.List;
 
 @Service
 public class GoogleSheetsApi {
+    public static final String RAW_VALUE_INPUT_OPTION = "RAW";
     private String CREDENTIALS_PATH = "./google_sheets_credentials.json";
 
     public List<Sheet> getSheets(String spreadsheetId) {
@@ -59,5 +61,21 @@ public class GoogleSheetsApi {
         return new Sheets.Builder(httpTransport, JacksonFactory.getDefaultInstance(), credential)
                 .setApplicationName("Client for sheets-accessor")
                 .build();
+    }
+
+    public void updateDataRange(String spreadsheetId, String courseName, String range, List<List<Object>> dataToWrite) {
+        String namedRange = "'" + courseName + "'!" + range;
+
+        ValueRange body = new ValueRange()
+                .setValues(dataToWrite);
+
+        try {
+            SheetsClient().spreadsheets().values()
+                    .update(spreadsheetId, namedRange, body)
+                    .setValueInputOption(RAW_VALUE_INPUT_OPTION)
+                    .execute();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 }

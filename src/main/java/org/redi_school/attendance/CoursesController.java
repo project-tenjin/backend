@@ -5,11 +5,10 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.ExceptionHandler;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.NoSuchElementException;
+
 
 @Controller
 public class CoursesController {
@@ -37,8 +36,18 @@ public class CoursesController {
         return "courseDetail";
     }
 
+    @PostMapping("/courses/{id}")
+    String postCourseAttendance(@RequestParam String courseName,
+                                @ModelAttribute("course_attendances") CourseAttendanceForm courseAttendanceForm,
+                                @RequestParam("date") String date) {
+        this.coursesRepository.updateCourseData(courseName, date, courseAttendanceForm.getAttendances());
+        return "redirect:/thanks";
+    }
+
     @ExceptionHandler(NoSuchElementException.class)
     ResponseEntity<String> handleNoSuchElementException() {
         return new ResponseEntity<String>(HttpStatus.NOT_FOUND);
     }
 }
+
+

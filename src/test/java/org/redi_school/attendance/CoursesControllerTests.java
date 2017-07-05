@@ -9,9 +9,12 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
 import java.util.Arrays;
+import java.util.HashMap;
 
 import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.verify;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @RunWith(MockitoJUnitRunner.class)
@@ -53,5 +56,25 @@ public class CoursesControllerTests {
         given(coursesRepository.getCourses()).willReturn(Arrays.asList(new CourseSummary(0, "class1"), new CourseSummary(1, "class2")));
         this.mvc.perform(get("/courses/2"))
                 .andExpect(status().isNotFound());
+    }
+
+    @Test
+    public void testRedirectToSuccessPageOnSuccessfulSave() throws Exception {
+        String courseName = "courseName";
+
+        this.mvc.perform(post("/courses/2")
+                .param("attendances[bar]", "bar")
+                .param("attendances[foo]", "foo")
+                .param("date", "4/20")
+                .param("courseName", courseName))
+                .andExpect(status().is3xxRedirection())
+                .andExpect(redirectedUrl("/thanks"));
+
+        HashMap<String, String> courseAttendance = new HashMap<String, String>() {{
+            put("bar", "bar");
+            put("foo", "foo");
+        }};
+
+        verify(coursesRepository).updateCourseData(courseName, "4/20", courseAttendance);
     }
 }
