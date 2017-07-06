@@ -31,17 +31,12 @@ import static org.springframework.boot.test.context.SpringBootTest.WebEnvironmen
 public class FeatureTest extends FluentAdapter {
 
     public static final int NUMBER_OF_RADIOBUTTON_CHOICES = 4;
+
     @Autowired
     private Environment environment;
+
     @Autowired
     private GoogleSheetsApi googleSheetsApi;
-
-//    @Autowired
-//    public FeatureTest(Environment environment, GoogleSheetsApi googleSheetsApi) {
-//        super();
-//        this.environment = environment;
-//        this.googleSheetsApi = googleSheetsApi;
-//    }
 
     private static WebDriver driver;
 
@@ -173,5 +168,4 @@ public class FeatureTest extends FluentAdapter {
     private void selectCourse(String courseName) {
         find(By.xpath("//a[text()='" + courseName + "']")).click();
     }
-
 }

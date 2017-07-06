@@ -62,3 +62,28 @@ cf login -a https://api.run.pivotal.io
 # select desired space, e.g. "development". Org should be preselected to "tenjin".
 cf logs backend-tenjin
 ```
+
+# Security
+## Basic Auth
+Cloud Foundry is configured with two environment variables with the username and password for basic auth.
+
+You can get them by `cf env tenjin-backend `
+
+The output will be
+
+```
+Getting env variables for app tenjin-backend in org tenjin / space development as ...
+...
+snip
+...
+User-Provided:
+CREDENTIALS_USERNAME: userNameFromLastPass
+CRENTIALS_PASSWORD passwordFromLastPass
+```
+
+These were set at one point with the commands from the secure note `Environment Variables for basic auth` in lastpass.
+
+```
+cf set-env tenjin-backend CREDENTIALS_USERNAME userNameFromLastPass
+cf set-env tenjin-backend CREDENTIALS_PASSWORD passwordFromLastPass
+```
