@@ -107,7 +107,8 @@ public class FeatureTest extends FluentAdapter {
         selectCourse(COURSE_NAME);
 
         assertThat($("select")).isNotEmpty();
-        assertThat($("select > option:first-of-type").text()).isEqualTo("4/24");
+        assertThat($("select > option:first-of-type").text()).isEqualTo("Please select a date");
+        assertThat($("select > option:nth-of-type(2)").text()).isEqualTo("4/24");
         assertThat($("select > option:last-of-type").text()).isEqualTo("7/13");
     }
 
