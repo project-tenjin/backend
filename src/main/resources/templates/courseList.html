@@ -7,7 +7,7 @@
 <body>
 <ul>
     <li th:each="courseSummary : ${courses}">
-        <a th:href="'/courses/' + ${courseSummary.id}" th:text="${courseSummary.name}" />
+        <a th:href="@{'/courses/'(name=${courseSummary.name})}" th:text="${courseSummary.name}" />
     </li>
 </ul>
 </body>

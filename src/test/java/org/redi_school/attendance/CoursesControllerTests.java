@@ -45,7 +45,7 @@ public class CoursesControllerTests {
         given(coursesRepository.getCourses()).willReturn(Arrays.asList(new CourseSummary(0, "class1"), new CourseSummary(1, "class2")));
         given(coursesRepository.getCourseDetails("class2")).willReturn(returnedCourseDetails);
 
-        this.mvc.perform(get("/courses/1"))
+        this.mvc.perform(get("/courses/?name=" + "class2"))
                 .andExpect(status().isOk())
                 .andExpect(view().name("courseDetail"))
                 .andExpect(model().attribute("courseDetails", returnedCourseDetails));
@@ -54,7 +54,7 @@ public class CoursesControllerTests {
     @Test
     public void testRenderCourseDetailsForNonExistingCourse() throws Exception {
         given(coursesRepository.getCourses()).willReturn(Arrays.asList(new CourseSummary(0, "class1"), new CourseSummary(1, "class2")));
-        this.mvc.perform(get("/courses/2"))
+        this.mvc.perform(get("/courses?name=not_a_course"))
                 .andExpect(status().isNotFound());
     }
 
@@ -62,7 +62,7 @@ public class CoursesControllerTests {
     public void testRedirectToSuccessPageOnSuccessfulSave() throws Exception {
         String courseName = "courseName";
 
-        this.mvc.perform(post("/courses/2")
+        this.mvc.perform(post("/courses?name=" + courseName)
                 .param("attendances[bar]", "bar")
                 .param("attendances[foo]", "foo")
                 .param("date", "4/20")
