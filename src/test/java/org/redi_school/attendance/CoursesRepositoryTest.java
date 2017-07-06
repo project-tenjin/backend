@@ -6,10 +6,7 @@ import com.mscharhag.oleaster.runner.OleasterRunner;
 import org.junit.runner.RunWith;
 import org.springframework.mock.env.MockEnvironment;
 
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
+import java.util.*;
 
 import static com.mscharhag.oleaster.runner.StaticRunnerSupport.*;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -81,32 +78,42 @@ public class CoursesRepositoryTest {
                     String courseName = "CourseSummary 1";
                     List<String> students = Arrays.asList("Student 1", "Student 2");
                     List<String> dates = Arrays.asList("3/31", "4/12", "5/18");
+                    Map<String, Map<String, String>> attendances = new HashMap<String, Map<String, String>>() {{
+                        put("3/31", new HashMap<String, String>() {{ put(students.get(0), "P"); put(students.get(1), "E"); }});
+                        put("4/12", new HashMap<String, String>() {{ put(students.get(0), "L"); put(students.get(1), ""); }});
+                        put("5/18", new HashMap<String, String>() {{ put(students.get(0), "U"); put(students.get(1), "P"); }});
+                    }};
 
                     List<List<Object>> sheetData = Arrays.asList(
                             Arrays.asList(""),
                             Arrays.asList("", "", dates.get(0), dates.get(1), dates.get(2), "Late", "Excused absence", "Unexcused absence"),
                             Arrays.asList(""), // Day of week
-                            Arrays.asList("", students.get(0)),
-                            Arrays.asList("", students.get(1))
+                            Arrays.asList("", students.get(0), "P", "L", "U"),
+                            Arrays.asList("", students.get(1), "E", "", "P")
                     );
 
                     given(this.googleSheetsApi.getRange(spreadsheetId, courseName, "A:ZZ"))
                             .willReturn(sheetData);
 
                     assertThat(this.coursesRepository.getCourseDetails(courseName))
-                            .isEqualTo(new CourseDetails(courseName, students, dates));
+                            .isEqualTo(new CourseDetails(courseName, students, dates, attendances));
                 });
 
                 it("returns details about a course and filters out empty student rows", () -> {
                     String courseName = "CourseSummary 1";
                     List<String> students = Arrays.asList("Student 1", "Student 2");
+                    Map<String, Map<String, String>> attendances = new HashMap<String, Map<String, String>>() {{
+                        put("3/31", new HashMap<String, String>() {{ put(students.get(0), "P"); put(students.get(1), "E"); }});
+                        put("4/12", new HashMap<String, String>() {{ put(students.get(0), "L"); put(students.get(1), ""); }});
+                        put("5/18", new HashMap<String, String>() {{ put(students.get(0), "U"); put(students.get(1), "P"); }});
+                    }};
 
                     List<List<Object>> sheetData = Arrays.asList(
                             Arrays.asList(""),
                             Arrays.asList(""), // Dates
                             Arrays.asList(""), // Day of week
-                            Arrays.asList("", "Student 1"),
-                            Arrays.asList("", "Student 2"),
+                            Arrays.asList("", students.get(0), "P", "L", "U"),
+                            Arrays.asList("", students.get(1), "E", "", "P"),
                             Arrays.asList("", ""), // Sometimes there are empty cells in the spreadsheet
                             Arrays.asList("", "")
                     );
@@ -115,7 +122,7 @@ public class CoursesRepositoryTest {
                             .willReturn(sheetData);
 
                     assertThat(this.coursesRepository.getCourseDetails(courseName))
-                            .isEqualTo(new CourseDetails(courseName, students, Collections.emptyList()));
+                            .isEqualTo(new CourseDetails(courseName, students, Collections.emptyList(), attendances));
                 });
             });
 

@@ -10,7 +10,10 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.verify;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -41,7 +44,14 @@ public class CoursesControllerTests {
 
     @Test
     public void testRenderCourseDetails() throws Exception {
-        CourseDetails returnedCourseDetails = new CourseDetails("class2", Arrays.asList("Student-name", "Student-other-name"), Arrays.asList("4/24", "4/27"));
+        CourseDetails returnedCourseDetails = new CourseDetails("class2",
+                Arrays.asList("Student-name", "Student-other-name"),
+                Arrays.asList("4/24", "4/27"),
+                new HashMap<String, Map<String, String>>() {{
+                    put("4/24", new HashMap<String, String>() {{ put("student-name", "P"); }});
+                    put("4/27", new HashMap<String, String>() {{ put("student-name", "U"); }});
+                }}
+        );
         given(coursesRepository.getCourses()).willReturn(Arrays.asList(new CourseSummary(0, "class1"), new CourseSummary(1, "class2")));
         given(coursesRepository.getCourseDetails("class2")).willReturn(returnedCourseDetails);
 
@@ -49,6 +59,32 @@ public class CoursesControllerTests {
                 .andExpect(status().isOk())
                 .andExpect(view().name("courseDetail"))
                 .andExpect(model().attribute("courseDetails", returnedCourseDetails));
+    }
+
+    @Test
+    public void testRenderCourseDetailsWithDate() throws Exception {
+        String expectedClass = "class2";
+        String expectedDate = "4/27";
+
+        CourseDetails returnedCourseDetails = new CourseDetails("class2",
+                Arrays.asList("Student-name", "Student-other-name"),
+                Arrays.asList(expectedDate, expectedDate),
+                new HashMap<String, Map<String, String>>() {{
+                    put("4/27", new HashMap<String, String>() {{ put("student-name", "U"); }});
+                }}
+        );
+        given(coursesRepository.getCourses()).willReturn(Arrays.asList(new CourseSummary(0, "class1"), new CourseSummary(1, expectedClass)));
+        given(coursesRepository.getCourseDetails(expectedClass)).willReturn(returnedCourseDetails);
+
+        this.mvc.perform(get("/courses/?name=" + expectedClass + "&date=" + expectedDate))
+                .andExpect(status().isOk())
+                .andExpect(view().name("courseDetail"))
+                .andExpect(model().attribute("courseDetails", returnedCourseDetails));
+    }
+
+    @Test
+    public void testRenderCourseDetailsWithDateForNonExistingDate() throws Exception {
+        assertThat(1).isEqualTo(2);
     }
 
     @Test

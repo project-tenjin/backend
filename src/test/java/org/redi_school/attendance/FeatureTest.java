@@ -43,7 +43,7 @@ public class FeatureTest extends FluentAdapter {
     @LocalServerPort
     private int port;
     private String COURSE_NAME = "Chasing Unicorns";
-    private String OTHER_COURSE_NAME = "App Design";
+    private String READONLY_COURSE_NAME = "App Design";
     private int NUMBER_OF_STUDENTS_IN_COURSE = 9;
 
     @BeforeClass
@@ -76,7 +76,7 @@ public class FeatureTest extends FluentAdapter {
         goTo(this.getBaseUrl());
 
         assertThat($("ul").text()).contains(COURSE_NAME);
-        assertThat($("ul").text()).contains(OTHER_COURSE_NAME);
+        assertThat($("ul").text()).contains(READONLY_COURSE_NAME);
     }
 
     @Test
@@ -117,7 +117,7 @@ public class FeatureTest extends FluentAdapter {
         goTo(this.getBaseUrl());
         selectCourse(COURSE_NAME);
 
-        selectDate();
+        selectDate("4/27");
         List<String> selectedAttendanceStates = randomlySelectStudentAttendanceStates();
         $("#submit").click();
 
@@ -131,6 +131,23 @@ public class FeatureTest extends FluentAdapter {
         }
     }
 
+    @Test
+    public void testPreexistingAttendanceDataAreDisplayedAfterDateSelection() throws Exception {
+        goTo(this.getBaseUrl());
+        selectCourse(READONLY_COURSE_NAME);
+        selectDate("4/25");
+
+//        assertThat($("li:first-of-type > div > input[type=radio]:nth-of-type(1)").attribute("selected")).isEqualTo("");
+//        assertThat($("li:first-of-type > div > input[type=radio]:nth-of-type(2)").attribute("selected")).isEqualTo("");
+        assertThat($("li:first-of-type > div > input[type=radio]:nth-of-type(3)").attribute("checked")).isEqualTo("checked");
+//        assertThat($("li:first-of-type > div > input[type=radio]:nth-of-type(4)").attribute("selected")).isEqualTo("");
+
+        assertThat($("li:last-of-type > div > input[type=radio]:nth-of-type(1)").attribute("selected")).isEqualTo("selected");
+        assertThat($("li:last-of-type > div > input[type=radio]:nth-of-type(2)").attribute("selected")).isEqualTo("");
+        assertThat($("li:last-of-type > div > input[type=radio]:nth-of-type(3)").attribute("selected")).isEqualTo("");
+        assertThat($("li:last-of-type > div > input[type=radio]:nth-of-type(4)").attribute("selected")).isEqualTo("");
+    }
+
     private List<String> randomlySelectStudentAttendanceStates() {
         List<String> selectedAttendanceStates = new ArrayList<>();
 
@@ -142,9 +159,8 @@ public class FeatureTest extends FluentAdapter {
         return selectedAttendanceStates;
     }
 
-    private void selectDate() {
-        String date = "4/27";
-        $("select[name=date]").fillSelect().withText(date);
+    private void selectDate(String data) {
+        $("select[name=date]").fillSelect().withText(data);
     }
 
     private String intToAttendanceState(int randomRadioIndex) {

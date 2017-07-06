@@ -1,16 +1,20 @@
 package org.redi_school.attendance;
 
 import java.util.List;
+import java.util.Map;
 
 public class CourseDetails {
     private String name;
     private List<String> students;
     private List<String> dates;
+    private Map<String, Map<String, String>> attendances;
 
-    public CourseDetails(String name, List<String> students, List<String> dates) {
+    public CourseDetails(String name, List<String> students, List<String> dates,
+                         Map<String, Map<String, String>> attendances) {
         this.name = name;
         this.students = students;
         this.dates = dates;
+        this.attendances = attendances;
     }
 
     public String getName() {
@@ -37,6 +41,14 @@ public class CourseDetails {
         this.dates = dates;
     }
 
+    public Map<String, Map<String, String>> getAttendances() {
+        return attendances;
+    }
+
+    public void setAttendances(Map<String, Map<String, String>> attendances) {
+        this.attendances = attendances;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -46,7 +58,8 @@ public class CourseDetails {
 
         if (name != null ? !name.equals(that.name) : that.name != null) return false;
         if (students != null ? !students.equals(that.students) : that.students != null) return false;
-        return dates != null ? dates.equals(that.dates) : that.dates == null;
+        if (dates != null ? !dates.equals(that.dates) : that.dates != null) return false;
+        return attendances != null ? attendances.equals(that.attendances) : that.attendances == null;
     }
 
     @Override
@@ -54,6 +67,7 @@ public class CourseDetails {
         int result = name != null ? name.hashCode() : 0;
         result = 31 * result + (students != null ? students.hashCode() : 0);
         result = 31 * result + (dates != null ? dates.hashCode() : 0);
+        result = 31 * result + (attendances != null ? attendances.hashCode() : 0);
         return result;
     }
 
@@ -63,6 +77,7 @@ public class CourseDetails {
                 "name='" + name + '\'' +
                 ", students=" + students +
                 ", dates=" + dates +
+                ", attendances=" + attendances +
                 '}';
     }
 }

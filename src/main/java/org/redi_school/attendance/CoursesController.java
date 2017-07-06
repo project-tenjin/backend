@@ -32,7 +32,7 @@ public class CoursesController {
     }
 
     @GetMapping("/courses")
-    String showCourse(@PathParam("name") String name, Model model) {
+    String showCourse(@PathParam("name") String name, @PathParam("date") String date, Model model) {
         CourseSummary currentCourseSummary = coursesRepository.getCourses().stream()
                 .filter((CourseSummary course) -> Objects.equals(course.getName(), name))
                 .findFirst().get();

@@ -6,6 +6,7 @@ import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Service;
 
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -20,6 +21,7 @@ public class CoursesRepository {
     private static final int DATE_FIELD_START_INDEX = 2;
     private static final int DATE_ROW_INDEX = 1;
     private static final int STUDENT_NAME_COLUMN_INDEX = 1;
+    private static final int ATTENDANCE_DATA_ROW_START_INDEX = 4;
 
     private static String ALL_DATA_RANGE = "A:ZZ";
     private static int HEADER_ROW_COUNT = 3;
@@ -54,8 +56,9 @@ public class CoursesRepository {
 
         List<String> students = getStudentNames(sheetData);
         List<String> dates = getDates(sheetData);
+        Map<String, Map<String, String>> attendances = getAttendances(sheetData);
 
-        return new CourseDetails(courseName, students, dates);
+        return new CourseDetails(courseName, students, dates, attendances);
     }
 
     void updateCourseData(String courseName, String date, Map<String, String> newData) {
@@ -86,14 +89,33 @@ public class CoursesRepository {
         return rawDates.subList(0, max(0, rawDates.size() - ADDITIONAL_DATE_FIELDS_COUNT));
     }
 
+    private Map<String, Map<String, String>> getAttendances(List<List<Object>> sheetData) {
+        Map<String, Map<String, String>> datesToStudentToAttendance = new HashMap<>();
+        List<String> studentNames = this.getStudentNames(sheetData);
+        this.getDates(sheetData).forEach((date) -> {
+            int dateColumnIndex = columnIndexForDate(sheetData, date);
+            datesToStudentToAttendance.put(date, new HashMap<>());
+            sheetData.stream()
+                    .skip(ATTENDANCE_DATA_ROW_START_INDEX)
+                    .map((List<Object> row) -> { row.get(dateColumnIndex).toString(); });
+        });
+
+
+        return null;
+    }
+
     private List<List<Object>> diffData(List<List<Object>> spreadsheetData, Map<String, String> newData, String date) {
-        int columnIndexForDate = DATE_FIELD_START_INDEX + getDates(spreadsheetData).indexOf(date);
+        int columnIndexForDate = columnIndexForDate(spreadsheetData, date);
 
         return spreadsheetData.stream()
                 .skip(HEADER_ROW_COUNT)
                 .filter(CoursesRepository::studentsWithoutName)
                 .map(row -> newStudentAttendanceValue(row, columnIndexForDate, newData))
                 .collect(Collectors.toList());
+    }
+
+    private int columnIndexForDate(List<List<Object>> spreadsheetData, String date) {
+        return DATE_FIELD_START_INDEX + getDates(spreadsheetData).indexOf(date);
     }
 
     private List<Object> newStudentAttendanceValue(List<Object> rowWithStudentData, int columnIndexForDate, Map<String, String> newData) {
