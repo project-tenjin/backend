@@ -164,17 +164,5 @@ public class CoursesRepositoryTest {
                 });
             });
         });
-
-        describe("index to column char", () -> {
-            it("translates correctly", () -> {
-                assertThat(this.coursesRepository.columnIndexToLetter(1)).isEqualTo("A");
-                assertThat(this.coursesRepository.columnIndexToLetter(19)).isEqualTo("S");
-                assertThat(this.coursesRepository.columnIndexToLetter(26)).isEqualTo("Z");
-                assertThat(this.coursesRepository.columnIndexToLetter(27)).isEqualTo("AA");
-                assertThat(this.coursesRepository.columnIndexToLetter(28)).isEqualTo("AB");
-                assertThat(this.coursesRepository.columnIndexToLetter(29)).isEqualTo("AC");
-                assertThat(this.coursesRepository.columnIndexToLetter(52)).isEqualTo("AZ");
-            });
-        });
     }
 }

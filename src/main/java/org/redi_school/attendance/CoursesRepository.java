@@ -25,6 +25,7 @@ public class CoursesRepository {
     private static int HEADER_ROW_COUNT = 3;
 
     private final Environment environment;
+    private final SpreadsheetColumnNameMapper helper;
     private GoogleSheetsApi googleSheetsApi;
     private String spreadsheetId;
 
@@ -32,6 +33,7 @@ public class CoursesRepository {
     CoursesRepository(GoogleSheetsApi googleSheetsApi, Environment environment) {
         this.googleSheetsApi = googleSheetsApi;
         this.environment = environment;
+        this.helper = new SpreadsheetColumnNameMapper();
         spreadsheetId = this.environment.getProperty("google.spreadsheet.id");
     }
 
@@ -113,24 +115,7 @@ public class CoursesRepository {
         int startIndexForStudentData = HEADER_ROW_COUNT + 1;
         int endIndexForStudentData = startIndexForStudentData + numberOfStudends;
 
-        String columnLetter = columnIndexToLetter(DATE_FIELD_START_INDEX + columnOfDate);
+        String columnLetter = this.helper.columnIndexToLetter(DATE_FIELD_START_INDEX + columnOfDate);
         return columnLetter + startIndexForStudentData + ":" + columnLetter + endIndexForStudentData;
-    }
-
-    String columnIndexToLetter(int columnNumber) {
-        int temp = 0;
-        StringBuffer letters = new StringBuffer();
-
-        while (columnNumber > 0) {
-            temp = (columnNumber - 1) % 26;
-            letters.append(charForInt(temp));
-            columnNumber = (columnNumber - temp - 1) / 26;
-        }
-        return letters.reverse().toString();
-    }
-
-    private String charForInt(int toMakeAChar) {
-        int asciiOffsetForAt = 65;
-        return String.valueOf((char) (toMakeAChar + asciiOffsetForAt));
     }
 }
