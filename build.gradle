@@ -31,6 +31,8 @@ dependencies {
     compile('org.springframework.boot:spring-boot-starter-security')
     compile('com.google.apis:google-api-services-sheets:v4-rev478-1.22.0')
 
+    runtime('org.springframework.boot:spring-boot-devtools')
+
     testCompile('org.springframework.boot:spring-boot-starter-test')
     testCompile('com.github.detro.ghostdriver:phantomjsdriver:1.0.1')
     testCompile('io.github.bonigarcia:webdrivermanager:1.7.0')

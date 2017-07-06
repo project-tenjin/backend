@@ -30,7 +30,7 @@ import static org.springframework.boot.test.context.SpringBootTest.WebEnvironmen
 @RunWith(SpringJUnit4ClassRunner.class)
 public class FeatureTest extends FluentAdapter {
 
-    public static final int NUMBER_OF_RADIOBUTTON_CHOICES = 4;
+    public static final int NUMBER_OF_RADIOBUTTON_CHOICES = 3;
 
     @Autowired
     private Environment environment;
@@ -85,8 +85,9 @@ public class FeatureTest extends FluentAdapter {
         selectCourse(COURSE_NAME);
 
         assertThat($("h1#courseName").text()).isEqualTo(COURSE_NAME);
-        assertThat($("li:first-of-type>div:first-of-type").text()).isEqualTo("Student 1");
-        assertThat($("li:last-of-type>div:first-of-type").text()).isEqualTo("Student 9");
+
+        assertThat($("tr:nth-child(2) > th:nth-child(1)").text()).isEqualTo("Student 1");
+        assertThat($("tr:last-child > th:nth-child(1)").text()).isEqualTo("Student 9");
     }
 
     @Test
@@ -95,10 +96,9 @@ public class FeatureTest extends FluentAdapter {
         selectCourse(COURSE_NAME);
 
         assertThat($("form")).isNotEmpty();
-        assertThat($("li:first-of-type>div>input[type=radio]:nth-of-type(1)").value()).contains("P");
-        assertThat($("li:first-of-type>div>input[type=radio]:nth-of-type(2)").value()).contains("L");
-        assertThat($("li:first-of-type>div>input[type=radio]:nth-of-type(3)").value()).contains("U");
-        assertThat($("li:first-of-type>div>input[type=radio]:nth-of-type(4)").value()).contains("E");
+        assertThat($("table > tbody > tr:nth-of-type(2) > th:nth-of-type(2) > input").value()).isEqualTo("P");
+        assertThat($("table > tbody > tr:nth-of-type(2) > th:nth-of-type(3) > input").value()).isEqualTo("L");
+        assertThat($("table > tbody > tr:nth-of-type(2) > th:nth-of-type(4) > input").value()).isEqualTo("U");
     }
 
     @Test
@@ -107,6 +107,7 @@ public class FeatureTest extends FluentAdapter {
         selectCourse(COURSE_NAME);
 
         assertThat($("select")).isNotEmpty();
+
         assertThat($("select > option:first-of-type").text()).isEqualTo("Please select a date");
         assertThat($("select > option:nth-of-type(2)").text()).isEqualTo("4/24");
         assertThat($("select > option:last-of-type").text()).isEqualTo("7/13");
@@ -136,7 +137,9 @@ public class FeatureTest extends FluentAdapter {
 
         for (int student = 1; student <= NUMBER_OF_STUDENTS_IN_COURSE; student++) {
             int randomRadioIndex = ThreadLocalRandom.current().nextInt(1, NUMBER_OF_RADIOBUTTON_CHOICES + 1);
-            $("li:nth-of-type(" + student + ") > div > input[type=radio]:nth-of-type(" + randomRadioIndex + ")").click();
+            int trStudentIndex = student + 1; // Index 1 is the header tr with P L U.
+            int thRadioButtonIndex = randomRadioIndex + 1; // Index 1 is the name th.
+            $("table > tbody > tr:nth-of-type(" + trStudentIndex + ") > th:nth-of-type(" + thRadioButtonIndex +") > input").click();
             selectedAttendanceStates.add(intToAttendanceState(randomRadioIndex));
         }
         return selectedAttendanceStates;
@@ -158,9 +161,6 @@ public class FeatureTest extends FluentAdapter {
                 break;
             case 3:
                 attendanceState = "U";
-                break;
-            case 4:
-                attendanceState = "E";
                 break;
         }
         return attendanceState;

@@ -3,27 +3,63 @@
 <head>
     <meta charset="UTF-8"/>
     <title th:text="${courseDetails.name}"/>
+    <link rel="stylesheet" type="text/css" href="/css/main.css"/>
 </head>
 <body>
-<h1 id="courseName" th:text="${courseDetails.name}"/>
-<form name="course_attendance" target="_self" method="post">
-    <input type="hidden" name="courseName" th:value="${courseDetails.name}"/>
-    <select name="date">
-        <option selected="selected" disabled="disabled">Please select a date</option>
-        <option th:each="date : ${courseDetails.dates}" th:text="${date}"/>
-    </select>
-    <ul>
-        <li th:each="student : ${courseDetails.students}">
-            <div th:text="${student}"/>
-            <div>
-                <input type="radio" th:name="'attendances['+${student}+']'" value="P"/>
-                <input type="radio" th:name="'attendances['+${student}+']'" value="L"/>
-                <input type="radio" th:name="'attendances['+${student}+']'" value="U"/>
-                <input type="radio" th:name="'attendances['+${student}+']'" value="E"/>
-            </div>
-        </li>
-    </ul>
-    <input id="submit" type="submit"/>
-</form>
+<nav>
+    <img src="/images/redi-logo.png" width="218px" height="auto"/>
+</nav>
+
+
+<div id="content">
+    <h1 id="courseName" th:text="${courseDetails.name}"/>
+
+    <form name="course_attendance" target="_self" method="post">
+        <input type="hidden" name="courseName" th:value="${courseDetails.name}"/>
+        <select name="date">
+            <option selected="selected" disabled="disabled">Please select a date</option>
+            <option th:each="date : ${courseDetails.dates}" th:text="${date}"/>
+        </select>
+
+
+
+        <table border="0" rules="none">
+            <tr>
+                <th></th>
+                <th>P</th>
+                <th>L</th>
+                <th>A</th>
+            </tr>
+
+            <tr th:each="student, iter : ${courseDetails.students}"
+                th:classappend="${iter.index} % 2 == 0 ? rowLight : rowDark">
+                <th th:text="${student}"/>
+                <th><input type="radio" th:name="'attendances['+${student}+']'" value="P"/></th>
+                <th><input type="radio" th:name="'attendances['+${student}+']'" value="L"/></th>
+                <th><input type="radio" th:name="'attendances['+${student}+']'" value="U"/></th>
+            </tr>
+        </table>
+
+        <!--<ul>-->
+            <!--<li th:each="student : ${courseDetails.students}">-->
+                <!--<div th:text="${student}"/>-->
+                <!--<div>-->
+                    <!--<input type="radio" th:name="'attendances['+${student}+']'" value="P"/>-->
+                    <!--<input type="radio" th:name="'attendances['+${student}+']'" value="L"/>-->
+                    <!--<input type="radio" th:name="'attendances['+${student}+']'" value="U"/>-->
+                    <!--<input type="radio" th:name="'attendances['+${student}+']'" value="E"/>-->
+                <!--</div>-->
+            <!--</li>-->
+        <!--</ul>-->
+        <input id="submit" type="submit"/>
+    </form>
+
+    <p>
+        P - present <br />
+        L - late <br />
+        A - Absent <br />
+    </p>
+</div>
+
 </body>
 </html>

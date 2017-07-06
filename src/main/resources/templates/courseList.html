@@ -1,14 +1,23 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
 <head>
-    <meta charset="UTF-8" />
+    <meta charset="UTF-8"/>
     <title>Tenjin</title>
+    <link rel="stylesheet" type="text/css" href="/css/main.css"/>
 </head>
 <body>
-<ul>
-    <li th:each="courseSummary : ${courses}">
-        <a th:href="@{'/courses/'(name=${courseSummary.name})}" th:text="${courseSummary.name}" />
-    </li>
-</ul>
+<nav>
+    <img src="/images/redi-logo.png" width="218px" height="auto"/>
+</nav>
+<div id="content">
+    <div id="courseList">
+        <p>Select your class</p>
+        <ul>
+            <li th:each="courseSummary : ${courses}">
+                <a th:href="@{'/courses/'(name=${courseSummary.name})}" th:text="${courseSummary.name}"/>
+            </li>
+        </ul>
+    </div>
+</div>
 </body>
 </html>
