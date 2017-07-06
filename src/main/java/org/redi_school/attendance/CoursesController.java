@@ -37,10 +37,10 @@ public class CoursesController {
     }
 
     @PostMapping("/courses/{id}")
-    String postCourseAttendance(@RequestParam String courseName,
-                                @ModelAttribute("course_attendances") CourseAttendanceForm courseAttendanceForm,
-                                @RequestParam("date") String date) {
-        this.coursesRepository.updateCourseData(courseName, date, courseAttendanceForm.getAttendances());
+    String postCourseAttendance(@ModelAttribute CourseAttendanceForm courseAttendanceForm) {
+        this.coursesRepository.updateCourseData(courseAttendanceForm.getCourseName(),
+                courseAttendanceForm.getDate(),
+                courseAttendanceForm.getAttendances());
         return "redirect:/thanks";
     }
 
