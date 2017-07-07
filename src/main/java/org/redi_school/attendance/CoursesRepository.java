@@ -99,7 +99,14 @@ public class CoursesRepository {
     private List<Object> newStudentAttendanceValue(List<Object> rowWithStudentData, int columnIndexForDate, Map<String, String> newData) {
         String studentName = rowWithStudentData.get(STUDENT_NAME_COLUMN_INDEX).toString();
         String oldAttendanceValue = rowWithStudentData.get(columnIndexForDate).toString();
+
         String newAttendanceValue = newData.getOrDefault(studentName, oldAttendanceValue);
+
+        if (oldAttendanceValue.equals("E") && newAttendanceValue.equals("U")) {
+            // If a student is already excused in the spreadsheet, don't override it with unexcused!
+            return Collections.singletonList((Object) oldAttendanceValue);
+        }
+
         return Collections.singletonList((Object) newAttendanceValue);
     }
 

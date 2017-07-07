@@ -162,7 +162,48 @@ public class CoursesRepositoryTest {
 
                     verify(this.googleSheetsApi).updateDataRange(spreadsheetId, courseName, range, dataToWriteToSpreadsheet);
                 });
+
+                it("doesnt update column if a student alrady have E attendance status", () -> {
+
+                    String courseName = "Unicorns";
+                    List<String> dates = Arrays.asList("3/31", "4/20", "5/18");
+                    List<String> students = Arrays.asList("Student 1", "Student 2", "Student 3", "Student 4");
+
+                    List<List<Object>> sheetData = Arrays.asList(
+                            Arrays.asList(""),
+                            Arrays.asList("", "", dates.get(0), dates.get(1), dates.get(2), "Late", "Excused absence", "Unexcused absence"),
+                            Arrays.asList(""), // Day of week
+                            Arrays.asList("", students.get(0), "", ""),
+                            Arrays.asList("", students.get(1), "", "E"),
+                            Arrays.asList("", students.get(2), "", "E"),
+                            Arrays.asList("", students.get(3), "", "")
+                    );
+
+                    HashMap<String, String> updateData = new HashMap<String, String>() {{
+                        put(students.get(0), "P");
+                        put(students.get(1), "U");
+                        put(students.get(2), "L");
+                        put(students.get(3), "L");
+                    }};
+
+                    // D corresponds with the date, "4/20"
+                    String range = "D4:D8";
+
+                    List<List<Object>> dataToWriteToSpreadsheet = Arrays.asList(
+                            Collections.singletonList("P"),
+                            Collections.singletonList("E"),
+                            Collections.singletonList("L"),
+                            Collections.singletonList("L")
+                    );
+
+                    given(this.googleSheetsApi.getRange(spreadsheetId, courseName, "A:ZZ")).willReturn(sheetData);
+
+                    this.coursesRepository.updateCourseData(courseName, dates.get(1), updateData);
+
+                    verify(this.googleSheetsApi).updateDataRange(spreadsheetId, courseName, range, dataToWriteToSpreadsheet);
+                });
             });
+
         });
     }
 }
