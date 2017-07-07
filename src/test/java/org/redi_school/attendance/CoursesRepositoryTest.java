@@ -54,12 +54,20 @@ public class CoursesRepositoryTest {
                                 .isEqualTo(Arrays.asList(new CourseSummary(0, "CourseSummary A"), new CourseSummary(1, "CourseSummary B")));
                     });
 
-                    it("filters out non-course sheets", () -> {
+                    it("filters out non-course sheets with asterisk in the name", () -> {
                         given(this.googleSheetsApi.getSheets(spreadsheetId))
-                                .willReturn(Arrays.asList(buildSheet(0, "Attendance key"), buildSheet(1, "CourseSummary A"), buildSheet(2, "CourseSummary B")));
+                                .willReturn(Arrays.asList(
+                                        buildSheet(0, "*Attendance key"),
+                                        buildSheet(1, "CourseSummary A"),
+                                        buildSheet(2, "CourseSummary B"),
+                                        buildSheet(3, "Hide me*"),
+                                        buildSheet(4, "CourseSummary C")));
 
                         assertThat(this.coursesRepository.getCourses())
-                                .isEqualTo(Arrays.asList(new CourseSummary(1, "CourseSummary A"), new CourseSummary(2, "CourseSummary B")));
+                                .isEqualTo(Arrays.asList(
+                                        new CourseSummary(1, "CourseSummary A"),
+                                        new CourseSummary(2, "CourseSummary B"),
+                                        new CourseSummary(4, "CourseSummary C")));
                     });
                 });
 
@@ -84,7 +92,7 @@ public class CoursesRepositoryTest {
 
                     List<List<Object>> sheetData = Arrays.asList(
                             Arrays.asList(""),
-                            Arrays.asList("", "", dates.get(0), dates.get(1), dates.get(2), "Late", "Excused absence", "Unexcused absence"),
+                            Arrays.asList("", "", dates.get(0), dates.get(1), dates.get(2), "Present", "Late", "Excused absence", "Unexcused absence"),
                             Arrays.asList(""), // Day of week
                             Arrays.asList("", students.get(0)),
                             Arrays.asList("", students.get(1))
@@ -129,11 +137,11 @@ public class CoursesRepositoryTest {
 
                     String courseName = "Unicorns";
                     List<String> dates = Arrays.asList("3/31", "4/20", "5/18");
-                    List<String> students = Arrays.asList("Student 1", "Student 2", "Student 3", "Student 4");
+                    List<String> students = Arrays.asList("Student 1", "[D] Amer Afoura", "Student 3", "[T] Apratim Choudhury");
 
                     List<List<Object>> sheetData = Arrays.asList(
                             Arrays.asList(""),
-                            Arrays.asList("", "", dates.get(0), dates.get(1), dates.get(2), "Late", "Excused absence", "Unexcused absence"),
+                            Arrays.asList("", "", dates.get(0), dates.get(1), dates.get(2), "Present", "Late", "Excused absence", "Unexcused absence"),
                             Arrays.asList(""), // Day of week
                             Arrays.asList("", students.get(0), "", "P"),
                             Arrays.asList("", students.get(1), "", ""),
@@ -171,7 +179,7 @@ public class CoursesRepositoryTest {
 
                     List<List<Object>> sheetData = Arrays.asList(
                             Arrays.asList(""),
-                            Arrays.asList("", "", dates.get(0), dates.get(1), dates.get(2), "Late", "Excused absence", "Unexcused absence"),
+                            Arrays.asList("", "", dates.get(0), dates.get(1), dates.get(2), "Present", "Late", "Excused absence", "Unexcused absence"),
                             Arrays.asList(""), // Day of week
                             Arrays.asList("", students.get(0), "", ""),
                             Arrays.asList("", students.get(1), "", "E"),

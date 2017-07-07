@@ -15,8 +15,8 @@ import static java.lang.StrictMath.max;
 @Service
 public class CoursesRepository {
 
-    private static final String NON_COURSE_SHEET_NAME = "attendance key";
-    private static final int ADDITIONAL_DATE_FIELDS_COUNT = 3;
+    private static final String FILTER_OUT_SHEET_CHAR = "*";
+    private static final int ADDITIONAL_DATE_FIELDS_COUNT = 4;
     private static final int DATE_FIELD_START_INDEX = 2;
     private static final int DATE_ROW_INDEX = 1;
     private static final int STUDENT_NAME_COLUMN_INDEX = 1;
@@ -40,8 +40,7 @@ public class CoursesRepository {
     List<CourseSummary> getCourses() {
         List<Sheet> sheets = this.googleSheetsApi.getSheets(spreadsheetId);
         return sheets.stream()
-                .filter((sheet) -> (!sheet.getProperties().getTitle().toLowerCase()
-                        .equals(NON_COURSE_SHEET_NAME.toLowerCase())))
+                .filter((sheet) -> !sheet.getProperties().getTitle().contains(FILTER_OUT_SHEET_CHAR))
                 .map((sheet) -> new CourseSummary(
                         sheet.getProperties().getSheetId(),
                         sheet.getProperties().getTitle()
