@@ -41,8 +41,7 @@ Simply add a new student row to add a new student or remove a row entirely to re
 The first date of the course **must** start at `C:2` and the last three cells in the `C` row **must**  contain `Late`, `Excused absence` and `Unexcused absence`.
 
 ## Additional Information
-The first sheet, called "Attendance key" is ignored by default. Any other sheets will show up as a course name
-in the app.
+Any sheet with an asterisk in its name, for example `This course is not shown*` will not be listed in the app.
 
 # Deploying
 
