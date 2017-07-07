@@ -91,6 +91,7 @@ th {
 	font-family: Roboto;
 	font-size: 14px;
 	color: #202020;
+	min-width: 24px;
 }
 .rowLight {
     background-color: #f8f8f8;
