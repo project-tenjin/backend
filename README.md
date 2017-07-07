@@ -36,9 +36,10 @@ new sheet and adjust the data accordingly.
 ## Managing Students
 Students **must** be in row `B` of each course sheet. They **must** start in column `B:4`. There can be as many students as required.
 Simply add a new student row to add a new student or remove a row entirely to remove the student.
+There **must** not be any empty rows among the studens.
 
 ## Managing Course Dates
-The first date of the course **must** start at `C:2` and the last three cells in the `C` row **must**  contain `Late`, `Excused absence` and `Unexcused absence`.
+The first date of the course **must** start at `C:2` and the last three cells in the `C` row **must**  contain `Present`, `Late`, `Excused absence` and `Unexcused absence`.
 
 ## Additional Information
 Any sheet with an asterisk in its name, for example `This course is not shown*` will not be listed in the app.
