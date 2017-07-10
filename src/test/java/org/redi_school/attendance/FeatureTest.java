@@ -87,7 +87,7 @@ public class FeatureTest extends FluentAdapter {
         assertThat($("h1#courseName").text()).isEqualTo(COURSE_NAME);
 
         assertThat($("tr:nth-child(2) > th:nth-child(1)").text()).isEqualTo("Student 1");
-        assertThat($("tr:last-child > th:nth-child(1)").text()).isEqualTo("Student 9");
+        assertThat($("tr:last-child > th:nth-child(1)").text()).isEqualTo("Student 13");
     }
 
     @Test
