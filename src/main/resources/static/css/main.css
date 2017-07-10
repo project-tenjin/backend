@@ -111,6 +111,14 @@ form > input[type=submit] {
     text-align: center;
     color: #ffffff;
 }
+
+.error {
+    font-weight: normal;
+    color: #ef5b1f;
+    font-size: 16px;
+    align-self: left;
+}
+
 #content > p {
     margin-top: 32px;
     text-align: left;

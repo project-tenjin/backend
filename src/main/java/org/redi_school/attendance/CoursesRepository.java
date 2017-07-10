@@ -57,7 +57,7 @@ public class CoursesRepository {
         return new CourseDetails(courseName, students, dates);
     }
 
-    void updateCourseData(String courseName, String date, Map<String, String> newData) {
+    void updateCourseData(String courseName, String date, Map<String, String> newData) throws IllegalArgumentException {
         if (newData.size() == 0) {
             return;
         }
@@ -113,9 +113,13 @@ public class CoursesRepository {
         return !rowWithStudentData.get(STUDENT_NAME_COLUMN_INDEX).equals("");
     }
 
-    private String calculateRangeForUpdate(List<List<Object>> rawData, String date) {
+    private String calculateRangeForUpdate(List<List<Object>> rawData, String date) throws IllegalArgumentException {
         List<String> dates = getDates(rawData);
-        int columnOfDate = dates.indexOf(date) + 1; // +1 since spreadsheet is 1 indexed
+        final int dateIndex = dates.indexOf(date);
+
+        if(dateIndex == -1) throw new IllegalArgumentException("Please select a date.");
+
+        int columnOfDate = dateIndex + 1; // +1 since spreadsheet is 1 indexed
         int numberOfStudends = getStudentNames(rawData).size();
 
         int startIndexForStudentData = HEADER_ROW_COUNT + 1;

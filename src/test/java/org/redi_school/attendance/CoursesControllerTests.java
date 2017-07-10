@@ -12,6 +12,9 @@ import java.util.Arrays;
 import java.util.HashMap;
 
 import static org.mockito.BDDMockito.given;
+import static org.mockito.Matchers.anyMap;
+import static org.mockito.Matchers.anyString;
+import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.verify;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -76,5 +79,20 @@ public class CoursesControllerTests {
         }};
 
         verify(coursesRepository).updateCourseData(courseName, "4/20", courseAttendance);
+    }
+
+    @Test
+    public void testRedirectToErrorWhenNoDate() throws Exception {
+        doThrow(new IllegalArgumentException("")).when(coursesRepository).updateCourseData(anyString(), anyString(), anyMap());
+
+        String courseName = "courseName";
+
+        this.mvc.perform(post("/courses?name=" + courseName)
+                .param("attendances[bar]", "bar")
+                .param("attendances[foo]", "foo")
+                .param("date", "WRONG DATE")
+                .param("courseName", courseName))
+                .andExpect(status().is3xxRedirection())
+                .andExpect(redirectedUrl("/courses?name=" + courseName + "&error=Date required"));
     }
 }

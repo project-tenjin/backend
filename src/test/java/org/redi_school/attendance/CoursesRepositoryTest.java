@@ -133,6 +133,28 @@ public class CoursesRepositoryTest {
                     verifyZeroInteractions(this.googleSheetsApi);
                 });
 
+                fit("throws an error with no date", () -> {
+                    try {
+                        String courseName = "Unicorns";
+
+                        List<String> dates = Arrays.asList("3/31");
+                        List<String> students = Arrays.asList("Student A");
+                        List<List<Object>> sheetData = Arrays.asList(
+                                Arrays.asList(""),
+                                Arrays.asList("", "", dates.get(0), "Present", "Late", "Excused absence", "Unexcused absence"),
+                                Arrays.asList(""), // Day of week
+                                Arrays.asList("", students.get(0), "", "")
+                        );
+                        given(this.googleSheetsApi.getRange(spreadsheetId, courseName, "A:ZZ")).willReturn(sheetData);
+
+
+                        this.coursesRepository.updateCourseData("Unicorns", "WRONG_DATE", new HashMap<String, String>() {{ put("Student A", "P");}});
+                        assertThat(true).isFalse();
+                    } catch(IllegalArgumentException e){
+                        assertThat(e.getMessage()).isEqualTo("Please select a date.");
+                    }
+                });
+
                 it("updates the course attendance data", () -> {
 
                     String courseName = "Unicorns";

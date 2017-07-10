@@ -32,21 +32,32 @@ public class CoursesController {
     }
 
     @GetMapping("/courses")
-    String showCourse(@PathParam("name") String name, Model model) {
+    String showCourse(@PathParam("name") String name,
+                      @PathParam("error") String error,
+                      Model model) {
+        model.addAttribute("error", error);
+
         CourseSummary currentCourseSummary = coursesRepository.getCourses().stream()
                 .filter((CourseSummary course) -> Objects.equals(course.getName(), name))
                 .findFirst().get();
         CourseDetails courseDetails = coursesRepository.getCourseDetails(currentCourseSummary.getName());
         model.addAttribute("courseDetails", courseDetails);
+
         return "courseDetail";
     }
 
     @PostMapping("/courses")
     String postCourseAttendance(@ModelAttribute CourseAttendanceForm courseAttendanceForm) {
-        this.coursesRepository.updateCourseData(courseAttendanceForm.getCourseName(),
-                courseAttendanceForm.getDate(),
-                courseAttendanceForm.getAttendances());
-        return "redirect:/thanks";
+        final String courseName = courseAttendanceForm.getCourseName();
+        try {
+            this.coursesRepository.updateCourseData(courseName,
+                    courseAttendanceForm.getDate(),
+                    courseAttendanceForm.getAttendances());
+            return "redirect:/thanks";
+
+        } catch (IllegalArgumentException e) {
+            return "redirect:/courses?name=" + courseName + "&error=Date required";
+        }
     }
 
     @ExceptionHandler(NoSuchElementException.class)
