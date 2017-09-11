@@ -1,4 +1,4 @@
-package org.redi_school.attendance;
+package org.redischool.attendance.details;
 
 import java.util.Map;
 

@@ -1,8 +1,9 @@
-package org.redi_school.attendance;
+package org.redischool.attendance.details;
 
-import com.google.api.services.sheets.v4.model.Sheet;
+import org.redischool.attendance.spreadsheet.GoogleSheetsApi;
+import org.redischool.attendance.spreadsheet.SpreadsheetColumnNameMapper;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.env.Environment;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.util.Collections;
@@ -13,9 +14,8 @@ import java.util.stream.Collectors;
 import static java.lang.StrictMath.max;
 
 @Service
-public class CoursesRepository {
+public class CourseDetailsRepository {
 
-    private static final String FILTER_OUT_SHEET_CHAR = "*";
     private static final int ADDITIONAL_DATE_FIELDS_COUNT = 4;
     private static final int DATE_FIELD_START_INDEX = 2;
     private static final int DATE_ROW_INDEX = 1;
@@ -24,31 +24,21 @@ public class CoursesRepository {
     private static String ALL_DATA_RANGE = "A:ZZ";
     private static int HEADER_ROW_COUNT = 3;
 
-    private final Environment environment;
     private final SpreadsheetColumnNameMapper helper;
     private GoogleSheetsApi googleSheetsApi;
     private String spreadsheetId;
 
     @Autowired
-    CoursesRepository(GoogleSheetsApi googleSheetsApi, Environment environment) {
+    public CourseDetailsRepository(
+            GoogleSheetsApi googleSheetsApi,
+            @Value("${google.spreadsheet.id}") String spreadsheetId) {
+
         this.googleSheetsApi = googleSheetsApi;
-        this.environment = environment;
         this.helper = new SpreadsheetColumnNameMapper();
-        spreadsheetId = this.environment.getProperty("google.spreadsheet.id");
+        this.spreadsheetId = spreadsheetId;
     }
 
-    List<CourseSummary> getCourses() {
-        List<Sheet> sheets = this.googleSheetsApi.getSheets(spreadsheetId);
-        return sheets.stream()
-                .filter((sheet) -> !sheet.getProperties().getTitle().contains(FILTER_OUT_SHEET_CHAR))
-                .map((sheet) -> new CourseSummary(
-                        sheet.getProperties().getSheetId(),
-                        sheet.getProperties().getTitle()
-                ))
-                .collect(Collectors.toList());
-    }
-
-    CourseDetails getCourseDetails(String courseName) {
+    public CourseDetails getCourseDetails(String courseName) {
         List<List<Object>> sheetData = this.googleSheetsApi.getRange(spreadsheetId, courseName, ALL_DATA_RANGE);
 
         List<String> students = getStudentNames(sheetData);
@@ -57,7 +47,7 @@ public class CoursesRepository {
         return new CourseDetails(courseName, students, dates);
     }
 
-    void updateCourseData(String courseName, String date, Map<String, String> newData) throws IllegalArgumentException {
+    public void updateCourseData(String courseName, String date, Map<String, String> newData) throws IllegalArgumentException {
         if (newData.size() == 0) {
             return;
         }
@@ -82,6 +72,7 @@ public class CoursesRepository {
                 .skip(DATE_FIELD_START_INDEX)
                 .map(Object::toString)
                 .collect(Collectors.toList());
+
         return rawDates.subList(0, max(0, rawDates.size() - ADDITIONAL_DATE_FIELDS_COUNT));
     }
 
@@ -90,7 +81,7 @@ public class CoursesRepository {
 
         return spreadsheetData.stream()
                 .skip(HEADER_ROW_COUNT)
-                .filter(CoursesRepository::studentsWithoutName)
+                .filter(CourseDetailsRepository::studentsWithoutName)
                 .map(row -> newStudentAttendanceValue(row, columnIndexForDate, newData))
                 .collect(Collectors.toList());
     }
@@ -103,10 +94,10 @@ public class CoursesRepository {
 
         if (oldAttendanceValue.equals("E") && newAttendanceValue.equals("U")) {
             // If a student is already excused in the spreadsheet, don't override it with unexcused!
-            return Collections.singletonList((Object) oldAttendanceValue);
+            return Collections.singletonList(oldAttendanceValue);
         }
 
-        return Collections.singletonList((Object) newAttendanceValue);
+        return Collections.singletonList(newAttendanceValue);
     }
 
     private static boolean studentsWithoutName(List<Object> rowWithStudentData) {

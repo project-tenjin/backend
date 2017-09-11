@@ -1,4 +1,4 @@
-package org.redi_school.attendance.config;
+package org.redischool.attendance.config;
 
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;

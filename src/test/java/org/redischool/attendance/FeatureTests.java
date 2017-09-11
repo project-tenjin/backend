@@ -1,4 +1,4 @@
-package org.redi_school.attendance;
+package org.redischool.attendance;
 
 import io.github.bonigarcia.wdm.PhantomJsDriverManager;
 import org.fluentlenium.adapter.FluentAdapter;
@@ -13,6 +13,7 @@ import org.openqa.selenium.phantomjs.PhantomJSDriver;
 import org.openqa.selenium.phantomjs.PhantomJSDriverService;
 import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.remote.service.DriverService;
+import org.redischool.attendance.spreadsheet.GoogleSheetsApi;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.embedded.LocalServerPort;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -28,9 +29,16 @@ import static org.springframework.boot.test.context.SpringBootTest.WebEnvironmen
 
 @SpringBootTest(webEnvironment = RANDOM_PORT)
 @RunWith(SpringJUnit4ClassRunner.class)
-public class FeatureTest extends FluentAdapter {
+public class FeatureTests extends FluentAdapter {
 
     public static final int NUMBER_OF_RADIOBUTTON_CHOICES = 3;
+
+    private static final String COURSE_NAME = "Chasing Unicorns";
+    private static final String OTHER_COURSE_NAME = "App Design";
+    private static final int NUMBER_OF_STUDENTS_IN_COURSE = 9;
+
+    @LocalServerPort
+    private int port;
 
     @Autowired
     private Environment environment;
@@ -39,12 +47,6 @@ public class FeatureTest extends FluentAdapter {
     private GoogleSheetsApi googleSheetsApi;
 
     private static WebDriver driver;
-
-    @LocalServerPort
-    private int port;
-    private String COURSE_NAME = "Chasing Unicorns";
-    private String OTHER_COURSE_NAME = "App Design";
-    private int NUMBER_OF_STUDENTS_IN_COURSE = 9;
 
     @BeforeClass
     public static void setupClass() {
@@ -61,7 +63,7 @@ public class FeatureTest extends FluentAdapter {
         }
 
         initFluent(driver);
-        this.setBaseUrl("http://localhost:" + port + "/");
+        setBaseUrl("http://localhost:" + port + "/");
     }
 
     @AfterClass
@@ -73,7 +75,7 @@ public class FeatureTest extends FluentAdapter {
 
     @Test
     public void testListOfCoursesIsDisplayed() throws Exception {
-        goTo(this.getBaseUrl());
+        goTo(getBaseUrl());
 
         assertThat($("ul").text()).contains(COURSE_NAME);
         assertThat($("ul").text()).contains(OTHER_COURSE_NAME);
@@ -81,7 +83,7 @@ public class FeatureTest extends FluentAdapter {
 
     @Test
     public void testListOfStudentsIsDisplayedOnCoursePage() throws Exception {
-        goTo(this.getBaseUrl());
+        goTo(getBaseUrl());
         selectCourse(COURSE_NAME);
 
         assertThat($("h1#courseName").text()).isEqualTo(COURSE_NAME);
@@ -92,7 +94,7 @@ public class FeatureTest extends FluentAdapter {
 
     @Test
     public void testFormForAttendanceStatusIsDisplayedPerStudentOnCoursePage() throws Exception {
-        goTo(this.getBaseUrl());
+        goTo(getBaseUrl());
         selectCourse(COURSE_NAME);
 
         assertThat($("form")).isNotEmpty();
@@ -103,7 +105,7 @@ public class FeatureTest extends FluentAdapter {
 
     @Test
     public void testDatePickerIsDisplayedOnCoursePageWithDatesFromSpreadsheet() throws Exception {
-        goTo(this.getBaseUrl());
+        goTo(getBaseUrl());
         selectCourse(COURSE_NAME);
 
         assertThat($("select")).isNotEmpty();
@@ -115,17 +117,17 @@ public class FeatureTest extends FluentAdapter {
 
     @Test
     public void testWeSeeASuccessMessageWhenWeSubmitTheDataFromTheCoursePage() throws Exception {
-        goTo(this.getBaseUrl());
+        goTo(getBaseUrl());
         selectCourse(COURSE_NAME);
 
         selectDate();
         List<String> selectedAttendanceStates = randomlySelectStudentAttendanceStates();
         $("#submit").click();
 
-        assertThat(this.getDriver().getCurrentUrl()).endsWith("/thanks");
+        assertThat(getDriver().getCurrentUrl()).endsWith("/thanks");
         assertThat($("body").text()).contains("Thanks");
 
-        List<List<Object>> attendanceStateInSpreadsheet = this.googleSheetsApi.getRange(this.environment.getProperty("google.spreadsheet.id"), COURSE_NAME, "D4:D12");
+        List<List<Object>> attendanceStateInSpreadsheet = googleSheetsApi.getRange(environment.getProperty("google.spreadsheet.id"), COURSE_NAME, "D4:D12");
         for (int i = 0; i < selectedAttendanceStates.size(); i++) {
             assertThat(attendanceStateInSpreadsheet.get(i).get(0))
                     .isEqualTo(selectedAttendanceStates.get(i));

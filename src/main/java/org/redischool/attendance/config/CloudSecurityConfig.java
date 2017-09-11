@@ -1,4 +1,4 @@
-package org.redi_school.attendance.config;
+package org.redischool.attendance.config;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;

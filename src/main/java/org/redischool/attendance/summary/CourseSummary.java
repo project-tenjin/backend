@@ -1,4 +1,4 @@
-package org.redi_school.attendance;
+package org.redischool.attendance.summary;
 
 public class CourseSummary {
     private int id;

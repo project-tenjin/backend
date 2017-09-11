@@ -1,7 +1,8 @@
-package org.redi_school.attendance;
+package org.redischool.attendance.spreadsheet;
 
-class SpreadsheetColumnNameMapper {
-    String columnIndexToLetter(int columnNumber) {
+public class SpreadsheetColumnNameMapper {
+
+    public String columnIndexToLetter(int columnNumber) {
         int temp = 0;
         StringBuilder letters = new StringBuilder();
 

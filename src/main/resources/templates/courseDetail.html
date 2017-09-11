@@ -20,13 +20,13 @@
 
     <form name="course_attendance" target="_self" method="post">
         <input type="hidden" name="courseName" th:value="${courseDetails.name}"/>
+
         <div class="error" th:text="${error}"></div>
+
         <select name="date">
             <option selected="selected" disabled="disabled">Please select a date</option>
             <option th:each="date : ${courseDetails.dates}" th:text="${date}"/>
         </select>
-
-
 
         <table border="0" rules="none">
             <tr>
@@ -45,17 +45,6 @@
             </tr>
         </table>
 
-        <!--<ul>-->
-            <!--<li th:each="student : ${courseDetails.students}">-->
-                <!--<div th:text="${student}"/>-->
-                <!--<div>-->
-                    <!--<input type="radio" th:name="'attendances['+${student}+']'" value="P"/>-->
-                    <!--<input type="radio" th:name="'attendances['+${student}+']'" value="L"/>-->
-                    <!--<input type="radio" th:name="'attendances['+${student}+']'" value="U"/>-->
-                    <!--<input type="radio" th:name="'attendances['+${student}+']'" value="E"/>-->
-                <!--</div>-->
-            <!--</li>-->
-        <!--</ul>-->
         <input id="submit" type="submit"/>
     </form>
 

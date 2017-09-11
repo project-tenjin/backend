@@ -1,4 +1,4 @@
-package org.redi_school.attendance;
+package org.redischool.attendance.spreadsheet;
 
 import com.google.api.client.googleapis.auth.oauth2.GoogleCredential;
 import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
@@ -20,13 +20,12 @@ import java.util.List;
 @Service
 public class GoogleSheetsApi {
     public static final String RAW_VALUE_INPUT_OPTION = "RAW";
+
     private String CREDENTIALS_PATH = "./google_sheets_credentials.json";
 
     public List<Sheet> getSheets(String spreadsheetId) {
-        Sheets sheetsClient = SheetsClient();
-        Sheets.Spreadsheets.Get request = null;
         try {
-            request = sheetsClient.spreadsheets().get(spreadsheetId);
+            Sheets.Spreadsheets.Get request = sheetsClient().spreadsheets().get(spreadsheetId);
             return request.execute().getSheets();
         } catch (IOException e) {
             throw new RuntimeException(e);
@@ -34,33 +33,13 @@ public class GoogleSheetsApi {
     }
 
     public List<List<Object>> getRange(String spreadsheetId, String sheetName, String range) {
-        Sheets sheetsClient = SheetsClient();
-        Sheets.Spreadsheets.Values.Get request = null;
         try {
             String namedRange = "'" + sheetName + "'!" + range;
-            request = sheetsClient.spreadsheets().values().get(spreadsheetId, namedRange);
+            Sheets.Spreadsheets.Values.Get request = sheetsClient().spreadsheets().values().get(spreadsheetId, namedRange);
             return request.execute().getValues();
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
-    }
-
-    private Sheets SheetsClient() {
-        GoogleCredential credential = null;
-        HttpTransport httpTransport = null;
-        try {
-            Resource resource = new ClassPathResource(CREDENTIALS_PATH);
-            InputStream resourceInputStream = resource.getInputStream();
-            credential = GoogleCredential.fromStream(resourceInputStream)
-                    .createScoped(SheetsScopes.all());
-            httpTransport = GoogleNetHttpTransport.newTrustedTransport();
-        } catch (GeneralSecurityException | IOException e) {
-            throw new RuntimeException(e);
-        }
-
-        return new Sheets.Builder(httpTransport, JacksonFactory.getDefaultInstance(), credential)
-                .setApplicationName("Client for sheets-accessor")
-                .build();
     }
 
     public void updateDataRange(String spreadsheetId, String courseName, String range, List<List<Object>> dataToWrite) {
@@ -70,11 +49,29 @@ public class GoogleSheetsApi {
                 .setValues(dataToWrite);
 
         try {
-            SheetsClient().spreadsheets().values()
+            sheetsClient().spreadsheets().values()
                     .update(spreadsheetId, namedRange, body)
                     .setValueInputOption(RAW_VALUE_INPUT_OPTION)
                     .execute();
         } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    private Sheets sheetsClient() {
+        try {
+            Resource resource = new ClassPathResource(CREDENTIALS_PATH);
+            InputStream resourceInputStream = resource.getInputStream();
+            GoogleCredential credential = GoogleCredential.fromStream(resourceInputStream)
+                    .createScoped(SheetsScopes.all());
+
+            HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
+
+            return new Sheets.Builder(httpTransport, JacksonFactory.getDefaultInstance(), credential)
+                    .setApplicationName("Client for sheets-accessor")
+                    .build();
+
+        } catch (GeneralSecurityException | IOException e) {
             throw new RuntimeException(e);
         }
     }

@@ -1,4 +1,4 @@
-package org.redi_school.attendance;
+package org.redischool.attendance;
 
 import io.github.bonigarcia.wdm.PhantomJsDriverManager;
 import org.fluentlenium.adapter.FluentAdapter;
@@ -26,11 +26,12 @@ import static org.springframework.boot.test.context.SpringBootTest.WebEnvironmen
 @ActiveProfiles("cloud")
 public class FeatureTestForSecurity extends FluentAdapter {
 
-    private static WebDriver driver;
+    private static final String COURSE_NAME = "Chasing Unicorns";
 
     @LocalServerPort
     private int port;
-    private String COURSE_NAME = "Chasing Unicorns";
+
+    private static WebDriver driver;
 
     static {
         System.setProperty("credentials.username", "foo");
