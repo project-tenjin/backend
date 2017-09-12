@@ -2,7 +2,7 @@ package org.redischool.attendance.details;
 
 import java.util.Map;
 
-public class CourseAttendanceForm {
+public class CourseAttendance {
 
     private Map<String, String> attendances;
 

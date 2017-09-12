@@ -1,7 +1,10 @@
 package org.redischool.attendance;
 
+import com.google.common.collect.ImmutableMap;
 import io.github.bonigarcia.wdm.PhantomJsDriverManager;
 import org.fluentlenium.adapter.FluentAdapter;
+import org.fluentlenium.core.domain.FluentList;
+import org.fluentlenium.core.domain.FluentWebElement;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
@@ -15,6 +18,7 @@ import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.remote.service.DriverService;
 import org.redischool.attendance.spreadsheet.GoogleSheetsApi;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.context.embedded.LocalServerPort;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.core.env.Environment;
@@ -22,44 +26,48 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.ThreadLocalRandom;
 
+import static java.util.concurrent.TimeUnit.*;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.Assert.assertTrue;
 import static org.springframework.boot.test.context.SpringBootTest.WebEnvironment.RANDOM_PORT;
 
 @SpringBootTest(webEnvironment = RANDOM_PORT)
 @RunWith(SpringJUnit4ClassRunner.class)
-public class FeatureTests extends FluentAdapter {
+public class FeatureTests extends FeatureTestScaffolding {
 
-    public static final int NUMBER_OF_RADIOBUTTON_CHOICES = 3;
+    private static WebDriver driver;
 
-    private static final String COURSE_NAME = "Chasing Unicorns";
+    private static final int NUMBER_OF_RADIOBUTTON_CHOICES = 3;
+
     private static final String OTHER_COURSE_NAME = "App Design";
+
     private static final int NUMBER_OF_STUDENTS_IN_COURSE = 9;
 
-    @LocalServerPort
-    private int port;
+    private static final String DATE_SELECTED = "4/27";
 
-    @Autowired
-    private Environment environment;
+    private static final String FIRST_STUDENT = "Student 1";
+    private static final String LAST_STUDENT = "Student 9";
+
+    private static final Map<Integer, String> attendanceValueByRadioIndex =
+            ImmutableMap.<Integer, String>builder()
+                    .put(1, "P")
+                    .put(2, "L")
+                    .put(3, "U")
+                    .build();
 
     @Autowired
     private GoogleSheetsApi googleSheetsApi;
 
-    private static WebDriver driver;
-
-    @BeforeClass
-    public static void setupClass() {
-        PhantomJsDriverManager.getInstance().setup();
-    }
+    @Value("${google.spreadsheet.id}")
+    private String spreadSheetId;
 
     @Before
     public void setUp() throws Exception {
-        if (null == driver) {
-            DesiredCapabilities capabilities = new DesiredCapabilities();
-            DriverService service = PhantomJSDriverService.createDefaultService(capabilities);
-
-            driver = new PhantomJSDriver(service, capabilities);
+        if (driver == null) {
+            driver = createWebDriver();
         }
 
         initFluent(driver);
@@ -88,8 +96,8 @@ public class FeatureTests extends FluentAdapter {
 
         assertThat($("h1#courseName").text()).isEqualTo(COURSE_NAME);
 
-        assertThat($("tr:nth-child(2) > th:nth-child(1)").text()).isEqualTo("Student 1");
-        assertThat($("tr:last-child > th:nth-child(1)").text()).isEqualTo("Student 9");
+        assertThat($("tr:nth-child(2) > th:nth-child(1)").text()).isEqualTo(FIRST_STUDENT);
+        assertThat($("tr:last-child > th:nth-child(1)").text()).isEqualTo(LAST_STUDENT);
     }
 
     @Test
@@ -116,22 +124,56 @@ public class FeatureTests extends FluentAdapter {
     }
 
     @Test
+    public void testAttendanceIsRefreshedWhenDateIsSelected() throws Exception {
+        goTo(getBaseUrl());
+        selectCourse(COURSE_NAME);
+
+        assertTrue(radioButtonNotSelected());
+
+        selectDate();
+
+        waitUntilRadioButtonIsSelected();
+    }
+
+    @Test
     public void testWeSeeASuccessMessageWhenWeSubmitTheDataFromTheCoursePage() throws Exception {
         goTo(getBaseUrl());
         selectCourse(COURSE_NAME);
 
         selectDate();
+
+        waitUntilRadioButtonIsSelected();
+
         List<String> selectedAttendanceStates = randomlySelectStudentAttendanceStates();
         $("#submit").click();
 
         assertThat(getDriver().getCurrentUrl()).endsWith("/thanks");
         assertThat($("body").text()).contains("Thanks");
 
-        List<List<Object>> attendanceStateInSpreadsheet = googleSheetsApi.getRange(environment.getProperty("google.spreadsheet.id"), COURSE_NAME, "D4:D12");
+        List<List<Object>> attendanceStateInSpreadsheet = googleSheetsApi.getRange(spreadSheetId, COURSE_NAME, "D4:D12");
         for (int i = 0; i < selectedAttendanceStates.size(); i++) {
             assertThat(attendanceStateInSpreadsheet.get(i).get(0))
                     .isEqualTo(selectedAttendanceStates.get(i));
         }
+    }
+
+    private void waitUntilRadioButtonIsSelected() {
+        await().atMost(10, SECONDS)
+                .untilPredicate((fluentControl) -> radioButtonSelected());
+    }
+
+    private boolean radioButtonNotSelected() {
+        FluentList<FluentWebElement> radioStudent1 = find(By.cssSelector("input[name='attendances["+FIRST_STUDENT+"]']"));
+        return !radioStudent1.get(0).selected() &&
+                !radioStudent1.get(1).selected() &&
+                !radioStudent1.get(2).selected();
+    }
+
+    private boolean radioButtonSelected() {
+        FluentList<FluentWebElement> radioStudent1 = find(By.cssSelector("input[name='attendances["+FIRST_STUDENT+"]']"));
+        return radioStudent1.get(0).selected() ||
+			   radioStudent1.get(1).selected() ||
+			   radioStudent1.get(2).selected();
     }
 
     private List<String> randomlySelectStudentAttendanceStates() {
@@ -147,28 +189,15 @@ public class FeatureTests extends FluentAdapter {
         return selectedAttendanceStates;
     }
 
+    private void selectCourse(String courseName) {
+        find(By.xpath("//a[text()='" + courseName + "']")).click();
+    }
+
     private void selectDate() {
-        String date = "4/27";
-        $("select[name=date]").fillSelect().withText(date);
+        $("select[name=date]").fillSelect().withText(DATE_SELECTED);
     }
 
     private String intToAttendanceState(int randomRadioIndex) {
-        String attendanceState = "";
-        switch (randomRadioIndex) {
-            case 1:
-                attendanceState = "P";
-                break;
-            case 2:
-                attendanceState = "L";
-                break;
-            case 3:
-                attendanceState = "U";
-                break;
-        }
-        return attendanceState;
-    }
-
-    private void selectCourse(String courseName) {
-        find(By.xpath("//a[text()='" + courseName + "']")).click();
+        return attendanceValueByRadioIndex.getOrDefault(randomRadioIndex, "");
     }
 }

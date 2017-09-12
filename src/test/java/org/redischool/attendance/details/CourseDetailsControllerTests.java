@@ -8,7 +8,6 @@ import org.mockito.runners.MockitoJUnitRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
-import java.util.Arrays;
 import java.util.HashMap;
 
 import static java.util.Arrays.*;
@@ -50,10 +49,33 @@ public class CourseDetailsControllerTests {
     }
 
     @Test
+    public void testGetAttendanceForCourseAndDate() throws Exception {
+        String courseName = "courseName";
+        String date = "4/20";
+
+        HashMap<String, String> courseAttendance = new HashMap<String, String>() {{
+            put("student1", "P");
+            put("student2", "L");
+        }};
+
+        given(courseDetailsRepository.getAttendance(courseName, date)).willReturn(courseAttendance);
+
+        mvc.perform(get("/attendance")   //?courseName=" + courseName + "&date=" + date)
+                .param("date", date)
+                .param("courseName", courseName))
+                .andExpect(status().isOk())
+                .andExpect(content().contentType("application/json;charset=UTF-8"))
+                .andExpect(jsonPath("$.courseName").value(courseName))
+                .andExpect(jsonPath("$.date").value(date))
+                .andExpect(jsonPath("$.attendances.student1").value("P"))
+                .andExpect(jsonPath("$.attendances.student2").value("L"));
+    }
+
+    @Test
     public void testRedirectToSuccessPageOnSuccessfulSave() throws Exception {
         String courseName = "courseName";
 
-        mvc.perform(post("/courses?name=" + courseName)
+        mvc.perform(post("/attendance")
                 .param("attendances[student1]", "P")
                 .param("attendances[student2]", "L")
                 .param("date", "4/20")
@@ -66,17 +88,17 @@ public class CourseDetailsControllerTests {
             put("student2", "L");
         }};
 
-        verify(courseDetailsRepository).updateCourseData(courseName, "4/20", courseAttendance);
+        verify(courseDetailsRepository).updateAttendance(courseName, "4/20", courseAttendance);
     }
 
     @Test
     public void testRedirectToErrorWhenNoDate() throws Exception {
         doThrow(new IllegalArgumentException(""))
-                .when(courseDetailsRepository).updateCourseData(anyString(), anyString(), anyMap());
+                .when(courseDetailsRepository).updateAttendance(anyString(), anyString(), anyMap());
 
         String courseName = "courseName";
 
-        mvc.perform(post("/courses?name=" + courseName)
+        mvc.perform(post("/attendance?name=" + courseName)
                 .param("attendances[student1]", "P")
                 .param("attendances[student2]", "L")
                 .param("date", "WRONG DATE")

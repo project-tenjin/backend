@@ -1,16 +1,19 @@
 package org.redischool.attendance.details;
 
 import com.mscharhag.oleaster.runner.OleasterRunner;
+import org.hamcrest.Matchers;
 import org.junit.runner.RunWith;
 import org.redischool.attendance.spreadsheet.GoogleSheetsApi;
 
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import static com.mscharhag.oleaster.runner.StaticRunnerSupport.*;
 import static java.util.Arrays.asList;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.hamcrest.Matchers.*;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.*;
 
@@ -71,15 +74,41 @@ public class CourseDetailsRepositoryTest {
                     assertThat(courseDetailsRepository.getCourseDetails(courseName))
                             .isEqualTo(new CourseDetails(courseName, students, Collections.emptyList()));
                 });
+
+                it("returns attendance for a particular course and date", () -> {
+                    String courseName = "Unicorns";
+                    List<String> dates = asList("3/31", "4/20", "5/18");
+                    List<String> students = asList("Student 1", "Student 2", "Student 3", "Student 4");
+
+                    List<List<Object>> sheetData = asList(
+                            asList(""),
+                            asList("", "", dates.get(0), dates.get(1), dates.get(2), "Present", "Late", "Excused absence", "Unexcused absence"),
+                            asList(""), // Day of week
+                            asList("", students.get(0), "P"),
+                            asList("", students.get(1), "L"),
+                            asList("", students.get(2), "L"),
+                            asList("", students.get(3), "U")
+                    );
+
+                    given(googleSheetsApi.getRange(spreadsheetId, courseName, "A:ZZ"))
+                            .willReturn(sheetData);
+
+                    Map<String, String> attendance = courseDetailsRepository.getAttendance(courseName, dates.get(0));
+
+                    assertThat(attendance.get(students.get(0))).isEqualTo("P");
+                    assertThat(attendance.get(students.get(1))).isEqualTo("L");
+                    assertThat(attendance.get(students.get(2))).isEqualTo("L");
+                    assertThat(attendance.get(students.get(3))).isEqualTo("U");
+                });
             });
 
             describe("update course", () -> {
                 it("doesn't do anything with empty update data", () -> {
-                    courseDetailsRepository.updateCourseData("1", "", new HashMap<String, String>());
+                    courseDetailsRepository.updateAttendance("1", "", new HashMap<String, String>());
                     verifyZeroInteractions(googleSheetsApi);
                 });
 
-                fit("throws an error with no date", () -> {
+                it("throws an error with no date", () -> {
                     try {
                         String courseName = "Unicorns";
 
@@ -94,7 +123,7 @@ public class CourseDetailsRepositoryTest {
                         given(googleSheetsApi.getRange(spreadsheetId, courseName, "A:ZZ")).willReturn(sheetData);
 
 
-                        courseDetailsRepository.updateCourseData("Unicorns", "WRONG_DATE", new HashMap<String, String>() {{ put("Student A", "P");}});
+                        courseDetailsRepository.updateAttendance("Unicorns", "WRONG_DATE", new HashMap<String, String>() {{ put("Student A", "P");}});
                         assertThat(true).isFalse();
                     } catch(IllegalArgumentException e){
                         assertThat(e.getMessage()).isEqualTo("Please select a date.");
@@ -134,7 +163,7 @@ public class CourseDetailsRepositoryTest {
 
                     given(googleSheetsApi.getRange(spreadsheetId, courseName, "A:ZZ")).willReturn(sheetData);
 
-                    courseDetailsRepository.updateCourseData(courseName, dates.get(1), updateData);
+                    courseDetailsRepository.updateAttendance(courseName, dates.get(1), updateData);
 
                     verify(googleSheetsApi).updateDataRange(spreadsheetId, courseName, range, dataToWriteToSpreadsheet);
                 });
@@ -174,7 +203,7 @@ public class CourseDetailsRepositoryTest {
 
                     given(googleSheetsApi.getRange(spreadsheetId, courseName, "A:ZZ")).willReturn(sheetData);
 
-                    courseDetailsRepository.updateCourseData(courseName, dates.get(1), updateData);
+                    courseDetailsRepository.updateAttendance(courseName, dates.get(1), updateData);
 
                     verify(googleSheetsApi).updateDataRange(spreadsheetId, courseName, range, dataToWriteToSpreadsheet);
                 });

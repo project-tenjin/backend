@@ -8,6 +8,37 @@
     <link href="https://fonts.googleapis.com/css?family=Roboto:400,500,700" rel="stylesheet" />
 
     <link rel="icon" type="image/png" href="/images/favicon.png" />
+
+    <script type="text/javascript"
+            src="//code.jquery.com/jquery-1.12.4.js"></script>
+
+
+    <script th:inline="javascript">
+        /*<![CDATA[*/
+        var courseName = [[${courseDetails.name}]];
+        /*]]>*/
+
+        function refreshAttendance() {
+            var dateSelected = $("#date option:selected").text();
+
+            $.get('/attendance', { courseName: courseName, date: dateSelected }, function(data) {
+                for (var student in data.attendances) {
+                    if (data.attendances.hasOwnProperty(student)) {
+                        var attendanceValue = data.attendances[student];
+
+                        //TODO: Quick fix for this edge case
+                        //In the future, 'E' should have a note associated in the frontend
+                        if(attendanceValue == "E") {
+                            attendanceValue = "U";
+                        }
+
+                        $("input[name='attendances["+student+"]'][value='"+attendanceValue+"']").prop("checked",true);
+                    }
+                }
+            });
+        }
+    </script>
+
 </head>
 <body>
 <nav>
@@ -18,12 +49,12 @@
 <div id="content">
     <h1 id="courseName" th:text="${courseDetails.name}"/>
 
-    <form name="course_attendance" target="_self" method="post">
+    <form name="course_attendance" method="post" action="/attendance" target="_self">
         <input type="hidden" name="courseName" th:value="${courseDetails.name}"/>
 
         <div class="error" th:text="${error}"></div>
 
-        <select name="date">
+        <select id="date" name="date" onchange="javascript:refreshAttendance()">
             <option selected="selected" disabled="disabled">Please select a date</option>
             <option th:each="date : ${courseDetails.dates}" th:text="${date}"/>
         </select>

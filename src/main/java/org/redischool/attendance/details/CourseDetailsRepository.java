@@ -9,9 +9,10 @@ import org.springframework.stereotype.Service;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 import static java.lang.StrictMath.max;
+import static java.util.stream.Collectors.toList;
+import static java.util.stream.Collectors.toMap;
 
 @Service
 public class CourseDetailsRepository {
@@ -21,12 +22,12 @@ public class CourseDetailsRepository {
     private static final int DATE_ROW_INDEX = 1;
     private static final int STUDENT_NAME_COLUMN_INDEX = 1;
 
-    private static String ALL_DATA_RANGE = "A:ZZ";
-    private static int HEADER_ROW_COUNT = 3;
+    private static final String ALL_DATA_RANGE = "A:ZZ";
+    private static final int HEADER_ROW_COUNT = 3;
 
-    private final SpreadsheetColumnNameMapper helper;
-    private GoogleSheetsApi googleSheetsApi;
-    private String spreadsheetId;
+    private final SpreadsheetColumnNameMapper spreadsheetColumnNameMapper;
+    private final GoogleSheetsApi googleSheetsApi;
+    private final String spreadsheetId;
 
     @Autowired
     public CourseDetailsRepository(
@@ -34,12 +35,12 @@ public class CourseDetailsRepository {
             @Value("${google.spreadsheet.id}") String spreadsheetId) {
 
         this.googleSheetsApi = googleSheetsApi;
-        this.helper = new SpreadsheetColumnNameMapper();
+        this.spreadsheetColumnNameMapper = new SpreadsheetColumnNameMapper();
         this.spreadsheetId = spreadsheetId;
     }
 
     public CourseDetails getCourseDetails(String courseName) {
-        List<List<Object>> sheetData = this.googleSheetsApi.getRange(spreadsheetId, courseName, ALL_DATA_RANGE);
+        List<List<Object>> sheetData = getSheetData(courseName);
 
         List<String> students = getStudentNames(sheetData);
         List<String> dates = getDates(sheetData);
@@ -47,47 +48,73 @@ public class CourseDetailsRepository {
         return new CourseDetails(courseName, students, dates);
     }
 
-    public void updateCourseData(String courseName, String date, Map<String, String> newData) throws IllegalArgumentException {
-        if (newData.size() == 0) {
-            return;
-        }
+    public Map<String, String> getAttendance(String courseName, String date) {
+        List<List<Object>> sheetData = getSheetData(courseName);
 
-        List<List<Object>> spreadsheetData = this.googleSheetsApi.getRange(spreadsheetId, courseName, ALL_DATA_RANGE);
+        int columnIndexForDate = columnIndexForDate(sheetData, date);
+
+        return sheetData.stream()
+                .skip(HEADER_ROW_COUNT)
+                .filter(this::hasStudent)
+                .collect(toMap(
+                        row -> fetchStudent(row),
+                        row -> row.get(columnIndexForDate).toString()
+        ));
+    }
+
+    public void updateAttendance(String courseName, String date, Map<String, String> newAttendance) throws IllegalArgumentException {
+        if (newAttendance.isEmpty()) return;
+
+        List<List<Object>> spreadsheetData = getSheetData(courseName);
+
         String range = calculateRangeForUpdate(spreadsheetData, date);
-        List<List<Object>> dataToWrite = diffData(spreadsheetData, newData, date);
 
-        this.googleSheetsApi.updateDataRange(spreadsheetId, courseName, range, dataToWrite);
+        List<List<Object>> dataToWrite = diffData(spreadsheetData, newAttendance, date);
+
+        googleSheetsApi.updateDataRange(spreadsheetId, courseName, range, dataToWrite);
+    }
+
+    private List<List<Object>> getSheetData(String courseName) {
+        return googleSheetsApi.getRange(spreadsheetId, courseName, ALL_DATA_RANGE);
+    }
+
+    private boolean hasStudent(List<Object> row) {
+        return !fetchStudent(row).equals("");
+    }
+
+    private String fetchStudent(List<Object> row) {
+        return row.get(STUDENT_NAME_COLUMN_INDEX).toString();
     }
 
     private List<String> getStudentNames(List<List<Object>> sheetData) {
         return sheetData.stream()
                 .skip(HEADER_ROW_COUNT)
-                .map((row) -> row.get(STUDENT_NAME_COLUMN_INDEX).toString())
-                .filter((student) -> !student.equals(""))
-                .collect(Collectors.toList());
+                .filter(this::hasStudent)
+                .map(this::fetchStudent)
+                .collect(toList());
     }
 
     private List<String> getDates(List<List<Object>> sheetData) {
         List<String> rawDates = sheetData.get(DATE_ROW_INDEX).stream()
                 .skip(DATE_FIELD_START_INDEX)
                 .map(Object::toString)
-                .collect(Collectors.toList());
+                .collect(toList());
 
         return rawDates.subList(0, max(0, rawDates.size() - ADDITIONAL_DATE_FIELDS_COUNT));
     }
 
     private List<List<Object>> diffData(List<List<Object>> spreadsheetData, Map<String, String> newData, String date) {
-        int columnIndexForDate = DATE_FIELD_START_INDEX + getDates(spreadsheetData).indexOf(date);
+        int columnIndexForDate = columnIndexForDate(spreadsheetData, date);
 
         return spreadsheetData.stream()
                 .skip(HEADER_ROW_COUNT)
-                .filter(CourseDetailsRepository::studentsWithoutName)
+                .filter(this::hasStudent)
                 .map(row -> newStudentAttendanceValue(row, columnIndexForDate, newData))
-                .collect(Collectors.toList());
+                .collect(toList());
     }
 
     private List<Object> newStudentAttendanceValue(List<Object> rowWithStudentData, int columnIndexForDate, Map<String, String> newData) {
-        String studentName = rowWithStudentData.get(STUDENT_NAME_COLUMN_INDEX).toString();
+        String studentName = fetchStudent(rowWithStudentData);
         String oldAttendanceValue = rowWithStudentData.get(columnIndexForDate).toString();
 
         String newAttendanceValue = newData.getOrDefault(studentName, oldAttendanceValue);
@@ -100,13 +127,9 @@ public class CourseDetailsRepository {
         return Collections.singletonList(newAttendanceValue);
     }
 
-    private static boolean studentsWithoutName(List<Object> rowWithStudentData) {
-        return !rowWithStudentData.get(STUDENT_NAME_COLUMN_INDEX).equals("");
-    }
-
     private String calculateRangeForUpdate(List<List<Object>> rawData, String date) throws IllegalArgumentException {
         List<String> dates = getDates(rawData);
-        final int dateIndex = dates.indexOf(date);
+        int dateIndex = dates.indexOf(date);
 
         if(dateIndex == -1) throw new IllegalArgumentException("Please select a date.");
 
@@ -116,7 +139,13 @@ public class CourseDetailsRepository {
         int startIndexForStudentData = HEADER_ROW_COUNT + 1;
         int endIndexForStudentData = startIndexForStudentData + numberOfStudends;
 
-        String columnLetter = this.helper.columnIndexToLetter(DATE_FIELD_START_INDEX + columnOfDate);
+        String columnLetter = spreadsheetColumnNameMapper.columnIndexToLetter(DATE_FIELD_START_INDEX + columnOfDate);
+
         return columnLetter + startIndexForStudentData + ":" + columnLetter + endIndexForStudentData;
     }
+
+    private int columnIndexForDate(List<List<Object>> sheetData, String date) {
+        return DATE_FIELD_START_INDEX + getDates(sheetData).indexOf(date);
+    }
+
 }
