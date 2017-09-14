@@ -1,35 +1,28 @@
 package org.redischool.attendance;
 
 import com.google.common.collect.ImmutableMap;
-import io.github.bonigarcia.wdm.PhantomJsDriverManager;
-import org.fluentlenium.adapter.FluentAdapter;
 import org.fluentlenium.core.domain.FluentList;
 import org.fluentlenium.core.domain.FluentWebElement;
 import org.junit.AfterClass;
 import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.phantomjs.PhantomJSDriver;
-import org.openqa.selenium.phantomjs.PhantomJSDriverService;
-import org.openqa.selenium.remote.DesiredCapabilities;
-import org.openqa.selenium.remote.service.DriverService;
 import org.redischool.attendance.spreadsheet.GoogleSheetsApi;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.context.embedded.LocalServerPort;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.core.env.Environment;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ThreadLocalRandom;
 
-import static java.util.concurrent.TimeUnit.*;
+import static java.util.concurrent.TimeUnit.SECONDS;
+import static java.util.stream.Collectors.toList;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertTrue;
 import static org.springframework.boot.test.context.SpringBootTest.WebEnvironment.RANDOM_PORT;
@@ -150,11 +143,21 @@ public class FeatureTests extends FeatureTestScaffolding {
         assertThat(getDriver().getCurrentUrl()).endsWith("/thanks");
         assertThat($("body").text()).contains("Thanks");
 
-        List<List<Object>> attendanceStateInSpreadsheet = googleSheetsApi.getRange(spreadSheetId, COURSE_NAME, "D4:D12");
+        List<List<Object>> attendanceStateInSpreadsheet = fetchAttendanceFromSpreadsheet();
         for (int i = 0; i < selectedAttendanceStates.size(); i++) {
             assertThat(attendanceStateInSpreadsheet.get(i).get(0))
                     .isEqualTo(selectedAttendanceStates.get(i));
         }
+    }
+
+    private List<List<Object>> fetchAttendanceFromSpreadsheet() {
+        final List<List<Object>> attendance = googleSheetsApi.getRange(spreadSheetId, COURSE_NAME, "B4:D13");
+
+        //filter out dropped out
+        return attendance.stream()
+                .filter(row -> !((String) row.get(0)).contains("*"))
+                .map(row -> Collections.singletonList(row.get(2)))
+                .collect(toList());
     }
 
     private void waitUntilRadioButtonIsSelected() {

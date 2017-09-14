@@ -75,6 +75,28 @@ public class CourseDetailsRepositoryTest {
                             .isEqualTo(new CourseDetails(courseName, students, Collections.emptyList()));
                 });
 
+                it("returns details about a course and filters out student names with asterisk (*)", () -> {
+                    String courseName = "CourseSummary 1";
+                    List<String> students = asList("Student 1", "Student 3");
+
+                    List<List<Object>> sheetData = asList(
+                            asList(""),
+                            asList(""), // Dates
+                            asList(""), // Day of week
+                            asList("", "Student 1"),
+                            asList("", "Student 2*"),
+                            asList("", "Student 3"),
+                            asList("", ""), // Sometimes there are empty cells in the spreadsheet
+                            asList("", "")
+                    );
+
+                    given(googleSheetsApi.getRange(spreadsheetId, courseName, "A:ZZ"))
+                            .willReturn(sheetData);
+
+                    assertThat(courseDetailsRepository.getCourseDetails(courseName))
+                            .isEqualTo(new CourseDetails(courseName, students, Collections.emptyList()));
+                });
+
                 it("returns attendance for a particular course and date", () -> {
                     String courseName = "Unicorns";
                     List<String> dates = asList("3/31", "4/20", "5/18");

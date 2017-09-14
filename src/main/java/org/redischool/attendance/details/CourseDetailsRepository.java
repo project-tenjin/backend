@@ -25,6 +25,8 @@ public class CourseDetailsRepository {
     private static final String ALL_DATA_RANGE = "A:ZZ";
     private static final int HEADER_ROW_COUNT = 3;
 
+    private static final String FILTER_OUT_SHEET_CHAR = "*";
+
     private final SpreadsheetColumnNameMapper spreadsheetColumnNameMapper;
     private final GoogleSheetsApi googleSheetsApi;
     private final String spreadsheetId;
@@ -82,6 +84,10 @@ public class CourseDetailsRepository {
         return !fetchStudent(row).equals("");
     }
 
+    private boolean mustBeShown(String studentName) {
+        return !studentName.contains(FILTER_OUT_SHEET_CHAR);
+    }
+
     private String fetchStudent(List<Object> row) {
         return row.get(STUDENT_NAME_COLUMN_INDEX).toString();
     }
@@ -91,6 +97,7 @@ public class CourseDetailsRepository {
                 .skip(HEADER_ROW_COUNT)
                 .filter(this::hasStudent)
                 .map(this::fetchStudent)
+                .filter(this::mustBeShown)
                 .collect(toList());
     }
 
