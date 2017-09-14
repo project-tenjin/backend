@@ -32,7 +32,12 @@
                             attendanceValue = "U";
                         }
 
-                        $("input[name='attendances["+student+"]'][value='"+attendanceValue+"']").prop("checked",true);
+                        if(attendanceValue == "") {
+                            $("input[name='attendances["+student+"]']").prop("checked",false);
+                        } else {
+                            $("input[name='attendances["+student+"]'][value='"+attendanceValue+"']").prop("checked",true);
+                        }
+
                     }
                 }
             });
