@@ -44,7 +44,7 @@ public class CourseDetailsRepository {
     public CourseDetails getCourseDetails(String courseName) {
         List<List<Object>> sheetData = getSheetData(courseName);
 
-        List<String> students = getStudentNames(sheetData);
+        List<String> students = getStudentNamesAttendingCourse(sheetData);
         List<String> dates = getDates(sheetData);
 
         return new CourseDetails(courseName, students, dates);
@@ -92,7 +92,7 @@ public class CourseDetailsRepository {
         return row.get(STUDENT_NAME_COLUMN_INDEX).toString();
     }
 
-    private List<String> getStudentNames(List<List<Object>> sheetData) {
+    private List<String> getStudentNamesAttendingCourse(List<List<Object>> sheetData) {
         return sheetData.stream()
                 .skip(HEADER_ROW_COUNT)
                 .filter(this::hasStudent)
@@ -141,10 +141,10 @@ public class CourseDetailsRepository {
         if(dateIndex == -1) throw new IllegalArgumentException("Please select a date.");
 
         int columnOfDate = dateIndex + 1; // +1 since spreadsheet is 1 indexed
-        int numberOfStudends = getStudentNames(rawData).size();
+        int numberOfStudents = getAllStudentNames(rawData).size();
 
         int startIndexForStudentData = HEADER_ROW_COUNT + 1;
-        int endIndexForStudentData = startIndexForStudentData + numberOfStudends;
+        int endIndexForStudentData = startIndexForStudentData + numberOfStudents;
 
         String columnLetter = spreadsheetColumnNameMapper.columnIndexToLetter(DATE_FIELD_START_INDEX + columnOfDate);
 
@@ -153,6 +153,14 @@ public class CourseDetailsRepository {
 
     private int columnIndexForDate(List<List<Object>> sheetData, String date) {
         return DATE_FIELD_START_INDEX + getDates(sheetData).indexOf(date);
+    }
+
+    private List<String> getAllStudentNames(List<List<Object>> sheetData) {
+        return sheetData.stream()
+                .skip(HEADER_ROW_COUNT)
+                .filter(this::hasStudent)
+                .map(this::fetchStudent)
+                .collect(toList());
     }
 
 }
