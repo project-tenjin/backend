@@ -13,6 +13,7 @@ import java.util.Map;
 import static com.mscharhag.oleaster.runner.StaticRunnerSupport.*;
 import static java.util.Arrays.asList;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.hamcrest.Matchers.*;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.*;
@@ -131,25 +132,21 @@ public class CourseDetailsRepositoryTest {
                 });
 
                 it("throws an error with no date", () -> {
-                    try {
-                        String courseName = "Unicorns";
+                    String courseName = "Unicorns";
 
-                        List<String> dates = asList("3/31");
-                        List<String> students = asList("Student A");
-                        List<List<Object>> sheetData = asList(
-                                asList(""),
-                                asList("", "", dates.get(0), "Present", "Late", "Excused absence", "Unexcused absence"),
-                                asList(""), // Day of week
-                                asList("", students.get(0), "", "")
-                        );
-                        given(googleSheetsApi.getRange(spreadsheetId, courseName, "A:ZZ")).willReturn(sheetData);
+                    List<String> dates = asList("3/31");
+                    List<String> students = asList("Student A");
+                    List<List<Object>> sheetData = asList(
+                            asList(""),
+                            asList("", "", dates.get(0), "Present", "Late", "Excused absence", "Unexcused absence"),
+                            asList(""), // Day of week
+                            asList("", students.get(0), "", "")
+                    );
+                    given(googleSheetsApi.getRange(spreadsheetId, courseName, "A:ZZ")).willReturn(sheetData);
 
-
+                    assertThatThrownBy(() -> {
                         courseDetailsRepository.updateAttendance("Unicorns", "WRONG_DATE", new HashMap<String, String>() {{ put("Student A", "P");}});
-                        assertThat(true).isFalse();
-                    } catch(IllegalArgumentException e){
-                        assertThat(e.getMessage()).isEqualTo("Please select a date.");
-                    }
+                    }).isInstanceOf(IllegalArgumentException.class).hasMessageContaining("Please select a date.");
                 });
 
                 it("updates the course attendance data", () -> {
