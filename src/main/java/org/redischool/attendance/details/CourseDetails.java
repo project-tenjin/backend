@@ -1,16 +1,19 @@
 package org.redischool.attendance.details;
 
+import java.util.Date;
 import java.util.List;
 
 public class CourseDetails {
     private String name;
     private List<String> students;
-    private List<String> dates;
+    private List<String> formattedDates;
+    private List<Date> javaDates;
 
-    public CourseDetails(String name, List<String> students, List<String> dates) {
+    public CourseDetails(String name, List<String> students, List<String> formattedDates, List<Date> javaDates) {
         this.name = name;
         this.students = students;
-        this.dates = dates;
+        this.formattedDates = formattedDates;
+        this.javaDates = javaDates;
     }
 
     public String getName() {
@@ -29,12 +32,20 @@ public class CourseDetails {
         this.students = students;
     }
 
-    public List<String> getDates() {
-        return dates;
+    public List<String> getFormattedDates() {
+        return formattedDates;
     }
 
-    public void setDates(List<String> dates) {
-        this.dates = dates;
+    public void setFormattedDates(List<String> formattedDates) {
+        this.formattedDates = formattedDates;
+    }
+
+    public List<Date> getJavaDates() {
+        return javaDates;
+    }
+
+    public void setJavaDates(List<Date> javaDates) {
+        this.javaDates = javaDates;
     }
 
     @Override
@@ -44,16 +55,18 @@ public class CourseDetails {
 
         CourseDetails that = (CourseDetails) o;
 
-        if (name != null ? !name.equals(that.name) : that.name != null) return false;
-        if (students != null ? !students.equals(that.students) : that.students != null) return false;
-        return dates != null ? dates.equals(that.dates) : that.dates == null;
+        if (!name.equals(that.name)) return false;
+        if (!students.equals(that.students)) return false;
+        if (!formattedDates.equals(that.formattedDates)) return false;
+        return javaDates.equals(that.javaDates);
     }
 
     @Override
     public int hashCode() {
-        int result = name != null ? name.hashCode() : 0;
-        result = 31 * result + (students != null ? students.hashCode() : 0);
-        result = 31 * result + (dates != null ? dates.hashCode() : 0);
+        int result = name.hashCode();
+        result = 31 * result + students.hashCode();
+        result = 31 * result + formattedDates.hashCode();
+        result = 31 * result + javaDates.hashCode();
         return result;
     }
 
@@ -62,7 +75,8 @@ public class CourseDetails {
         return "CourseDetails{" +
                 "name='" + name + '\'' +
                 ", students=" + students +
-                ", dates=" + dates +
+                ", formattedDates=" + formattedDates +
+                ", javaDates=" + javaDates +
                 '}';
     }
 }

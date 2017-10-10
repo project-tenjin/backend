@@ -6,8 +6,7 @@ import com.google.api.client.http.HttpTransport;
 import com.google.api.client.json.jackson2.JacksonFactory;
 import com.google.api.services.sheets.v4.Sheets;
 import com.google.api.services.sheets.v4.SheetsScopes;
-import com.google.api.services.sheets.v4.model.Sheet;
-import com.google.api.services.sheets.v4.model.ValueRange;
+import com.google.api.services.sheets.v4.model.*;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Service;
@@ -15,6 +14,13 @@ import org.springframework.stereotype.Service;
 import java.io.IOException;
 import java.io.InputStream;
 import java.security.GeneralSecurityException;
+import java.time.LocalDateTime;
+import java.time.Month;
+import java.time.ZoneId;
+import java.time.temporal.TemporalAmount;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.Date;
 import java.util.List;
 
 @Service
@@ -42,6 +48,20 @@ public class GoogleSheetsApi {
         }
     }
 
+    public GridData getGridData(String spreadsheetId, String sheetName, String range) {
+        try {
+            String namedRange = "'" + sheetName + "'!" + range;
+            Sheets.Spreadsheets.Get request = sheetsClient().spreadsheets()
+                    .get(spreadsheetId)
+                    .setRanges(Collections.singletonList(namedRange))
+                    .setIncludeGridData(true);
+            Spreadsheet sheet = request.execute();
+            return sheet.getSheets().get(0).getData().get(0);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
     public void updateDataRange(String spreadsheetId, String courseName, String range, List<List<Object>> dataToWrite) {
         String namedRange = "'" + courseName + "'!" + range;
 
@@ -56,6 +76,13 @@ public class GoogleSheetsApi {
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    public static Date dateFromSerial(Double serialDate) {
+        LocalDateTime referenceDate = LocalDateTime.of(1989, Month.DECEMBER, 30, 0, 0);
+        LocalDateTime localDateTime = referenceDate.plusDays(serialDate.longValue());
+        Date date = Date.from(localDateTime.atZone(ZoneId.of("Europe/Berlin")).toInstant());
+        return date;
     }
 
     private Sheets sheetsClient() {

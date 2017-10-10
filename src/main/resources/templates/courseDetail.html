@@ -63,7 +63,7 @@
 
         <select id="date" name="date" onchange="javascript:refreshAttendance()">
             <option selected="selected" disabled="disabled">Please select a date</option>
-            <option th:each="date : ${courseDetails.dates}" th:text="${date}"/>
+            <option th:each="date : ${courseDetails.formattedDates}" th:text="${date}"/>
         </select>
 
         <table border="0" rules="none">

@@ -1,14 +1,16 @@
 package org.redischool.attendance.details;
 
+import com.google.api.services.sheets.v4.model.CellData;
+import com.google.api.services.sheets.v4.model.ExtendedValue;
+import com.google.api.services.sheets.v4.model.GridData;
+import com.google.api.services.sheets.v4.model.RowData;
 import org.redischool.attendance.spreadsheet.GoogleSheetsApi;
 import org.redischool.attendance.spreadsheet.SpreadsheetColumnNameMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import static java.lang.StrictMath.max;
 import static java.util.stream.Collectors.toList;
@@ -42,16 +44,18 @@ public class CourseDetailsRepository {
     }
 
     public CourseDetails getCourseDetails(String courseName) {
-        List<List<Object>> sheetData = getSheetData(courseName);
+        List<List<Object>> sheetData = getSheetValues(courseName);
+        GridData gridData = getGridData(courseName);
 
         List<String> students = getStudentNamesAttendingCourse(sheetData);
-        List<String> dates = getDates(sheetData);
+        List<String> formattedDates = getFormattedDates(sheetData);
+        List<Date> javaDates = getJavaDates(gridData);
 
-        return new CourseDetails(courseName, students, dates);
+        return new CourseDetails(courseName, students, formattedDates, javaDates);
     }
 
     public Map<String, String> getAttendance(String courseName, String date) {
-        List<List<Object>> sheetData = getSheetData(courseName);
+        List<List<Object>> sheetData = getSheetValues(courseName);
 
         int columnIndexForDate = columnIndexForDate(sheetData, date);
 
@@ -67,7 +71,7 @@ public class CourseDetailsRepository {
     public void updateAttendance(String courseName, String date, Map<String, String> newAttendance) throws IllegalArgumentException {
         if (newAttendance.isEmpty()) return;
 
-        List<List<Object>> spreadsheetData = getSheetData(courseName);
+        List<List<Object>> spreadsheetData = getSheetValues(courseName);
 
         String range = calculateRangeForUpdate(spreadsheetData, date);
 
@@ -76,8 +80,12 @@ public class CourseDetailsRepository {
         googleSheetsApi.updateDataRange(spreadsheetId, courseName, range, dataToWrite);
     }
 
-    private List<List<Object>> getSheetData(String courseName) {
+    private List<List<Object>> getSheetValues(String courseName) {
         return googleSheetsApi.getRange(spreadsheetId, courseName, ALL_DATA_RANGE);
+    }
+
+    private GridData getGridData(String courseName) {
+        return googleSheetsApi.getGridData(spreadsheetId, courseName, ALL_DATA_RANGE);
     }
 
     private boolean hasStudent(List<Object> row) {
@@ -101,13 +109,34 @@ public class CourseDetailsRepository {
                 .collect(toList());
     }
 
-    private List<String> getDates(List<List<Object>> sheetData) {
+    private List<String> getFormattedDates(List<List<Object>> sheetData) {
         List<String> rawDates = sheetData.get(DATE_ROW_INDEX).stream()
                 .skip(DATE_FIELD_START_INDEX)
                 .map(Object::toString)
                 .collect(toList());
 
         return rawDates.subList(0, max(0, rawDates.size() - ADDITIONAL_DATE_FIELDS_COUNT));
+    }
+
+    private List<Date> getJavaDates(GridData gridData) {
+        if (gridData == null) {
+            // Early opt-out; really just here to make testing work
+            // GridData is `final`, so we can not mock it. We'd have to create
+            // a whole sample GridData from hand...
+            return Collections.emptyList();
+        }
+
+        RowData rowData = gridData.getRowData().get(DATE_ROW_INDEX);
+        List<CellData> allCellData = rowData.getValues();
+        int max = max(DATE_FIELD_START_INDEX, allCellData.size() - ADDITIONAL_DATE_FIELDS_COUNT);
+        List<CellData> dateCellData = allCellData.subList(DATE_FIELD_START_INDEX, max);
+
+        return dateCellData.stream()
+                .map(CellData::getEffectiveValue)
+                .filter(Objects::nonNull)
+                .map(ExtendedValue::getNumberValue)
+                .map(GoogleSheetsApi::dateFromSerial)
+                .collect(toList());
     }
 
     private List<List<Object>> diffData(List<List<Object>> spreadsheetData, Map<String, String> newData, String date) {
@@ -135,7 +164,7 @@ public class CourseDetailsRepository {
     }
 
     private String calculateRangeForUpdate(List<List<Object>> rawData, String date) throws IllegalArgumentException {
-        List<String> dates = getDates(rawData);
+        List<String> dates = getFormattedDates(rawData);
         int dateIndex = dates.indexOf(date);
 
         if(dateIndex == -1) throw new IllegalArgumentException("Please select a date.");
@@ -152,7 +181,7 @@ public class CourseDetailsRepository {
     }
 
     private int columnIndexForDate(List<List<Object>> sheetData, String date) {
-        return DATE_FIELD_START_INDEX + getDates(sheetData).indexOf(date);
+        return DATE_FIELD_START_INDEX + getFormattedDates(sheetData).indexOf(date);
     }
 
     private List<String> getAllStudentNames(List<List<Object>> sheetData) {

@@ -8,6 +8,7 @@ import org.mockito.runners.MockitoJUnitRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
+import java.util.Date;
 import java.util.HashMap;
 
 import static java.util.Arrays.*;
@@ -38,7 +39,7 @@ public class CourseDetailsControllerTests {
         CourseDetails returnedCourseDetails = new CourseDetails(
                 "class2",
                 asList("Student-name", "Student-other-name"),
-                asList("4/24", "4/27"));
+                asList("4/24", "4/27"), asList(new Date(), new Date()));
 
         given(courseDetailsRepository.getCourseDetails("class2")).willReturn(returnedCourseDetails);
 

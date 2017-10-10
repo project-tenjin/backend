@@ -1,7 +1,6 @@
 package org.redischool.attendance.details;
 
 import com.mscharhag.oleaster.runner.OleasterRunner;
-import org.hamcrest.Matchers;
 import org.junit.runner.RunWith;
 import org.redischool.attendance.spreadsheet.GoogleSheetsApi;
 
@@ -14,7 +13,6 @@ import static com.mscharhag.oleaster.runner.StaticRunnerSupport.*;
 import static java.util.Arrays.asList;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.hamcrest.Matchers.*;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.*;
 
@@ -38,11 +36,11 @@ public class CourseDetailsRepositoryTest {
                 it("returns details about a course and strips out non-date fields from my dates", () -> {
                     String courseName = "CourseSummary 1";
                     List<String> students = asList("Student 1", "Student 2");
-                    List<String> dates = asList("3/31", "4/12", "5/18");
+                    List<String> formattedDates = asList("3/31", "4/12", "5/18");
 
                     List<List<Object>> sheetData = asList(
                             asList(""),
-                            asList("", "", dates.get(0), dates.get(1), dates.get(2), "Present", "Late", "Excused absence", "Unexcused absence"),
+                            asList("", "", formattedDates.get(0), formattedDates.get(1), formattedDates.get(2), "Present", "Late", "Excused absence", "Unexcused absence"),
                             asList(""), // Day of week
                             asList("", students.get(0)),
                             asList("", students.get(1))
@@ -52,7 +50,7 @@ public class CourseDetailsRepositoryTest {
                             .willReturn(sheetData);
 
                     assertThat(courseDetailsRepository.getCourseDetails(courseName))
-                            .isEqualTo(new CourseDetails(courseName, students, dates));
+                            .isEqualTo(new CourseDetails(courseName, students, formattedDates, Collections.emptyList()));
                 });
 
                 it("returns details about a course and filters out empty student rows", () -> {
@@ -73,7 +71,7 @@ public class CourseDetailsRepositoryTest {
                             .willReturn(sheetData);
 
                     assertThat(courseDetailsRepository.getCourseDetails(courseName))
-                            .isEqualTo(new CourseDetails(courseName, students, Collections.emptyList()));
+                            .isEqualTo(new CourseDetails(courseName, students, Collections.emptyList(), Collections.emptyList()));
                 });
 
                 it("returns details about a course and filters out student names with asterisk (*)", () -> {
@@ -95,7 +93,7 @@ public class CourseDetailsRepositoryTest {
                             .willReturn(sheetData);
 
                     assertThat(courseDetailsRepository.getCourseDetails(courseName))
-                            .isEqualTo(new CourseDetails(courseName, students, Collections.emptyList()));
+                            .isEqualTo(new CourseDetails(courseName, students, Collections.emptyList(), Collections.emptyList()));
                 });
 
                 it("returns attendance for a particular course and date", () -> {
