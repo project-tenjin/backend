@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8"/>
+    <link rel="stylesheet" type="text/css" href="/css/main.css"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="refresh" content="3;url=/" th:if="${status == 401}" />
+    <link href="https://fonts.googleapis.com/css?family=Roboto:400,500,700" rel="stylesheet" />
+    <link rel="icon" type="image/png" href="/images/favicon.png" />
+</head>
+<body>
+<nav>
+    <img src="/images/redi-logo.png" width="218px" height="auto"/>
+</nav>
+<div class="error container">
+    <p th:text="${status}" class="status"></p>
+    <div th:if="${status == 401}">
+        <p th:text="${message}" class="message"></p>
+        <p class="message extra">Redirecting back to courses list in 3s...</p>
+    </div>
+</div>
+</body>
+</html>

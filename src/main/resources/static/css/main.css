@@ -139,3 +139,30 @@ form > input[type=submit] {
     color: #ffffff;
 }
 
+.error.container {
+    width: 100%;
+    margin-top: 64px;
+    text-align: center;
+}
+
+.error.container > p {
+    padding: 0 16px;
+    font-family: Roboto;
+    font-size: 20px;
+    line-height: 2.0;
+}
+
+.error.container .status {
+    font-weight: bold;
+    font-size: 48px;
+}
+
+.error.container .message {
+    font-weight: bold;
+}
+
+.error.container .message.extra {
+    font-weight: lighter;
+    margin-top: 64px;
+    font-size: 14px;
+}
