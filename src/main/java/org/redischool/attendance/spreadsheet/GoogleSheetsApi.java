@@ -79,7 +79,7 @@ public class GoogleSheetsApi {
     }
 
     public static Date dateFromSerial(Double serialDate) {
-        LocalDateTime referenceDate = LocalDateTime.of(1989, Month.DECEMBER, 30, 0, 0);
+        LocalDateTime referenceDate = LocalDateTime.of(1899, Month.DECEMBER, 30, 0, 0);
         LocalDateTime localDateTime = referenceDate.plusDays(serialDate.longValue());
         Date date = Date.from(localDateTime.atZone(ZoneId.of("Europe/Berlin")).toInstant());
         return date;
