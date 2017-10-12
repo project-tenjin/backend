@@ -17,6 +17,8 @@
     <script th:inline="javascript">
         /*<![CDATA[*/
         var courseName = [[${courseDetails.name}]];
+        var closestCourseDate = [[${closestCourseDate}]];
+        $(document).ready(function() { selectInitialAttendance(closestCourseDate); });
         /*]]>*/
     </script>
 
@@ -32,18 +34,21 @@
 <div id="content">
     <h1 id="courseName" th:text="${courseDetails.name}"/>
 
-    <form name="course_attendance" method="post" action="/attendance" target="_self">
+    <form name="course_attendance" class="course_attendance" method="post" action="/attendance" target="_self">
         <input type="hidden" name="courseName" th:value="${courseDetails.name}"/>
 
         <div class="error" th:text="${error}"></div>
 
         <select id="date" name="date" onchange="javascript:refreshAttendance()">
             <option selected="selected" disabled="disabled">Please select a date</option>
-            <option th:each="date : ${courseDetails.formattedDates}" th:text="${date}"/>
+            <option th:each="dateMap : ${datesMap}"
+                    th:attr="data-date=${dateMap['supporting']}"
+                    th:text="${dateMap['display']}"/>
         </select>
 
+        <div id="overlay"></div>
         <table border="0" rules="none">
-            <tr>
+            <tr class="legend">
                 <th></th>
                 <th>P</th>
                 <th>L</th>
@@ -52,10 +57,10 @@
 
             <tr th:each="student, iter : ${courseDetails.students}"
                 th:classappend="${iter.index} % 2 == 0 ? rowLight : rowDark">
-                <th th:text="${student}"/>
-                <th><input type="radio" th:name="'attendances['+${student}+']'" value="P"/></th>
-                <th><input type="radio" th:name="'attendances['+${student}+']'" value="L"/></th>
-                <th><input type="radio" th:name="'attendances['+${student}+']'" value="U"/></th>
+                <td th:text="${student}"/>
+                <td class="checkbox"><input type="radio" th:name="'attendances['+${student}+']'" value="P"/></td>
+                <td class="checkbox"><input type="radio" th:name="'attendances['+${student}+']'" value="L"/></td>
+                <td class="checkbox"><input type="radio" th:name="'attendances['+${student}+']'" value="U"/></td>
             </tr>
         </table>
 

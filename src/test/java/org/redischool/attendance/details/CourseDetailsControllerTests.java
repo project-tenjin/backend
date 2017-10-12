@@ -8,13 +8,11 @@ import org.mockito.runners.MockitoJUnitRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
-import java.util.Date;
-import java.util.HashMap;
+import java.util.*;
 
 import static java.util.Arrays.*;
 import static org.mockito.BDDMockito.given;
-import static org.mockito.Matchers.anyMap;
-import static org.mockito.Matchers.anyString;
+import static org.mockito.Matchers.*;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.verify;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -29,24 +27,39 @@ public class CourseDetailsControllerTests {
     @Mock
     private CourseDetailsRepository courseDetailsRepository;
 
+    @Mock
+    private CourseHelper courseHelper;
+
     @Before
     public void setUp() throws Exception {
-        mvc = MockMvcBuilders.standaloneSetup(new CourseDetailsController(courseDetailsRepository)).build();
+        CourseDetailsController controller = new CourseDetailsController(courseDetailsRepository, courseHelper);
+        mvc = MockMvcBuilders.standaloneSetup(controller).build();
     }
 
     @Test
     public void testRenderCourseDetails() throws Exception {
+        String closestCourseDate = "2017-04-27T00:00Z";
         CourseDetails returnedCourseDetails = new CourseDetails(
                 "class2",
                 asList("Student-name", "Student-other-name"),
-                asList("4/24", "4/27"), asList(new Date(), new Date()));
+                asList("4/24", "4/27"),
+                // 2017, 4, 24 | 2017, 4, 27
+                asList(new Date(1492992000000L), new Date(1493251200000L)));
+        List datesMap = Collections.singletonList(new HashMap() {{
+            put("formatted", returnedCourseDetails.getFormattedDates());
+            put("java", returnedCourseDetails.getJavaDates());
+        }});
 
         given(courseDetailsRepository.getCourseDetails("class2")).willReturn(returnedCourseDetails);
+        given(courseHelper.closestCourseDate(any(), eq(returnedCourseDetails))).willReturn(closestCourseDate);
+        given(courseHelper.getFormattedDatesMap(returnedCourseDetails)).willReturn(datesMap);
 
         mvc.perform(get("/courses/?name=" + "class2"))
                 .andExpect(status().isOk())
                 .andExpect(view().name("courseDetail"))
-                .andExpect(model().attribute("courseDetails", returnedCourseDetails));
+                .andExpect(model().attribute("courseDetails", returnedCourseDetails))
+                .andExpect(model().attribute("datesMap", datesMap))
+                .andExpect(model().attribute("closestCourseDate", closestCourseDate));
     }
 
     @Test

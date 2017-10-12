@@ -89,8 +89,8 @@ public class FeatureTests extends FeatureTestScaffolding {
 
         assertThat($("h1#courseName").text()).isEqualTo(COURSE_NAME);
 
-        assertThat($("tr:nth-child(2) > th:nth-child(1)").text()).isEqualTo(FIRST_STUDENT);
-        assertThat($("tr:last-child > th:nth-child(1)").text()).isEqualTo(LAST_STUDENT);
+        assertThat($("tr:nth-child(2) > td:nth-child(1)").text()).isEqualTo(FIRST_STUDENT);
+        assertThat($("tr:last-child > td:nth-child(1)").text()).isEqualTo(LAST_STUDENT);
     }
 
     @Test
@@ -99,9 +99,9 @@ public class FeatureTests extends FeatureTestScaffolding {
         selectCourse(COURSE_NAME);
 
         assertThat($("form")).isNotEmpty();
-        assertThat($("table > tbody > tr:nth-of-type(2) > th:nth-of-type(2) > input").value()).isEqualTo("P");
-        assertThat($("table > tbody > tr:nth-of-type(2) > th:nth-of-type(3) > input").value()).isEqualTo("L");
-        assertThat($("table > tbody > tr:nth-of-type(2) > th:nth-of-type(4) > input").value()).isEqualTo("U");
+        assertThat($("table > tbody > tr:nth-of-type(2) > td:nth-of-type(2) > input").value()).isEqualTo("P");
+        assertThat($("table > tbody > tr:nth-of-type(2) > td:nth-of-type(3) > input").value()).isEqualTo("L");
+        assertThat($("table > tbody > tr:nth-of-type(2) > td:nth-of-type(4) > input").value()).isEqualTo("U");
     }
 
     @Test
@@ -186,7 +186,7 @@ public class FeatureTests extends FeatureTestScaffolding {
             int randomRadioIndex = ThreadLocalRandom.current().nextInt(1, NUMBER_OF_RADIOBUTTON_CHOICES + 1);
             int trStudentIndex = student + 1; // Index 1 is the header tr with P L U.
             int thRadioButtonIndex = randomRadioIndex + 1; // Index 1 is the name th.
-            $("table > tbody > tr:nth-of-type(" + trStudentIndex + ") > th:nth-of-type(" + thRadioButtonIndex +") > input").click();
+            $("table > tbody > tr:nth-of-type(" + trStudentIndex + ") > td:nth-of-type(" + thRadioButtonIndex +") > input").click();
             selectedAttendanceStates.add(intToAttendanceState(randomRadioIndex));
         }
         return selectedAttendanceStates;

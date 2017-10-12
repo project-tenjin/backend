@@ -8,17 +8,27 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import javax.websocket.server.PathParam;
-import java.util.NoSuchElementException;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.time.Instant;
+import java.time.ZoneOffset;
+import java.time.format.DateTimeFormatter;
+import java.util.*;
 
 
 @Controller
 public class CourseDetailsController {
 
     private CourseDetailsRepository courseDetailsRepository;
+    private CourseHelper courseHelper;
 
     @Autowired
-    public CourseDetailsController(CourseDetailsRepository courseDetailsRepository) {
+    public CourseDetailsController(
+            CourseDetailsRepository courseDetailsRepository,
+            CourseHelper courseHelper
+    ) {
         this.courseDetailsRepository = courseDetailsRepository;
+        this.courseHelper = courseHelper;
     }
 
     @GetMapping("/courses")
@@ -30,7 +40,9 @@ public class CourseDetailsController {
 
         CourseDetails courseDetails = courseDetailsRepository.getCourseDetails(name);
 
+        model.addAttribute("datesMap", courseHelper.getFormattedDatesMap(courseDetails));
         model.addAttribute("courseDetails", courseDetails);
+        model.addAttribute("closestCourseDate", courseHelper.closestCourseDate(new Date(), courseDetails));
 
         return "courseDetail";
     }

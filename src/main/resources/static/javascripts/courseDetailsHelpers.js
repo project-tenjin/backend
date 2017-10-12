@@ -1,5 +1,6 @@
 function refreshAttendance() {
     var dateSelected = $("#date option:selected").text();
+    showOverlay();
 
     $.get('/attendance', { courseName: courseName, date: dateSelected }, function(data) {
         for (var student in data.attendances) {
@@ -13,12 +14,38 @@ function refreshAttendance() {
                 }
 
                 if(attendanceValue == "") {
-                    $("input[name='attendances["+student+"]']").prop("checked",false);
+                    $("input[name='attendances[" + student + "]']").prop("checked", false);
                 } else {
-                    $("input[name='attendances["+student+"]'][value='"+attendanceValue+"']").prop("checked",true);
+                    $("input[name='attendances[" + student + "]'][value='" + attendanceValue + "']").prop("checked", true);
                 }
 
             }
         }
+        $("#overlay").fadeOut();
     });
+}
+
+function showOverlay() {
+  var table = $(".course_attendance table")
+  var tablePosition = table.position();
+  var top = tablePosition.top + parseInt(table.css('marginTop'));
+  var left = tablePosition.left;
+  var width = table.width();
+  var height = table.height();
+
+  $("#overlay").css({
+    position: 'absolute',
+    top: top,
+    left: left,
+    width: width,
+    height: height
+  });
+  $("#overlay").fadeIn();
+}
+
+function selectInitialAttendance(selectDate) {
+  var option = $('.course_attendance option[data-date="' + selectDate + '"]')
+  option.prop('selected', true)
+  refreshAttendance()
+  console.log("this is " + selectDate)
 }
