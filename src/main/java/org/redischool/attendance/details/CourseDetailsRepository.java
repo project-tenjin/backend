@@ -113,6 +113,7 @@ public class CourseDetailsRepository {
         List<String> rawDates = sheetData.get(DATE_ROW_INDEX).stream()
                 .skip(DATE_FIELD_START_INDEX)
                 .map(Object::toString)
+                .filter(o -> !o.equals(""))
                 .collect(toList());
 
         return rawDates.subList(0, max(0, rawDates.size() - ADDITIONAL_DATE_FIELDS_COUNT));

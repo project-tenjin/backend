@@ -40,7 +40,7 @@ public class CourseDetailsRepositoryTest {
 
                     List<List<Object>> sheetData = asList(
                             asList(""),
-                            asList("", "", formattedDates.get(0), formattedDates.get(1), formattedDates.get(2), "Present", "Late", "Excused absence", "Unexcused absence"),
+                            asList("", "", formattedDates.get(0), formattedDates.get(1), formattedDates.get(2), "", "Present", "Late", "Excused absence", "Unexcused absence"),
                             asList(""), // Day of week
                             asList("", students.get(0)),
                             asList("", students.get(1))
