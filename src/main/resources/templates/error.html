@@ -15,10 +15,13 @@
     </a>
 </nav>
 <div class="error container">
-    <p th:text="${status}" class="status"></p>
     <div th:if="${status == 401}">
-        <p th:text="${message}" class="message"></p>
-        <p class="message extra">Redirecting back to courses list in 3s...</p>
+        <p class="status">Oops...</p>
+        <p class="message">You need to be logged in to use the app.</p>
+        <p class="message extra">We'll send you back to course list in 3s...</p>
+    </div>
+    <div th:if="${status != 401}">
+        <p th:text="${status}" class="status"></p>
     </div>
 </div>
 </body>

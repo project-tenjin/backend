@@ -162,6 +162,7 @@ form > input[type=submit] {
 
 .error.container .message {
     font-weight: bold;
+    margin-top: 32px;
 }
 
 .error.container .message.extra {
