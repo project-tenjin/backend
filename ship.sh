@@ -3,6 +3,5 @@
 set -ex
 
 git pull -r
-./gradlew clean build
+./tests.sh
 git push
-
