@@ -7,6 +7,7 @@ import com.google.api.client.json.jackson2.JacksonFactory;
 import com.google.api.services.sheets.v4.Sheets;
 import com.google.api.services.sheets.v4.SheetsScopes;
 import com.google.api.services.sheets.v4.model.*;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Service;
@@ -17,8 +18,6 @@ import java.security.GeneralSecurityException;
 import java.time.LocalDateTime;
 import java.time.Month;
 import java.time.ZoneId;
-import java.time.temporal.TemporalAmount;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
@@ -27,7 +26,11 @@ import java.util.List;
 public class GoogleSheetsApi {
     public static final String RAW_VALUE_INPUT_OPTION = "RAW";
 
-    private String CREDENTIALS_PATH = "./google_sheets_credentials.json";
+    private String credentialsPath;
+
+    public GoogleSheetsApi(@Value("${google.credentials_path}") String credentialsPath) {
+        this.credentialsPath = credentialsPath;
+    }
 
     public List<Sheet> getSheets(String spreadsheetId) {
         try {
@@ -87,7 +90,7 @@ public class GoogleSheetsApi {
 
     private Sheets sheetsClient() {
         try {
-            Resource resource = new ClassPathResource(CREDENTIALS_PATH);
+            Resource resource = new ClassPathResource(credentialsPath);
             InputStream resourceInputStream = resource.getInputStream();
             GoogleCredential credential = GoogleCredential.fromStream(resourceInputStream)
                     .createScoped(SheetsScopes.all());

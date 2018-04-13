@@ -7,6 +7,7 @@ build
 
 # unencrypted credentials
 src/main/resources/google_sheets_credentials.json
+src/main/resources/google_sheets_acceptance_credentials.json
 
 # Compiled class file
 *.class
@@ -32,3 +33,4 @@ src/main/resources/google_sheets_credentials.json
 hs_err_pid*
 
 classes
+out/

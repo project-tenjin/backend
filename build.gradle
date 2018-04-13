@@ -30,7 +30,7 @@ dependencies {
     compile("org.springframework.boot:spring-boot-starter-thymeleaf:${springBootVersion}")
     compile('org.springframework.boot:spring-boot-starter-security')
 
-    compile('com.google.apis:google-api-services-sheets:v4-rev478-1.22.0')
+    compile('com.google.apis:google-api-services-sheets:v4-rev516-1.23.0')
 
     runtime('org.springframework.boot:spring-boot-devtools')
 
