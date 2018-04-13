@@ -26,4 +26,9 @@ jobs:
         organization: tenjin
         space: acceptance
         manifest: manifest-acceptance.yml
-
+    - stage: deploy to production
+      script: skip
+      deploy:
+        <<: *cloudfoundry
+        manifest: manifest.yml
+        space: development
