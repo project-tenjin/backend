@@ -1,5 +1,10 @@
 # ReDI Attendance Tracking (Codename Tenjin) [![Build Status](https://travis-ci.org/project-tenjin/backend.svg?branch=master)](https://travis-ci.org/project-tenjin/backend)
-Java Spring backend for project Tenjin
+Java Spring app for project Tenjin.
+
+# Environments
+
+* [Acceptance](https://tenjin-acceptance.cfapps.io)
+* [Production](https://app.redi-school.org)
 
 # Requirements
 
@@ -38,7 +43,10 @@ The sheet id comes from the link to the spreadsheet.
 Eg. `https://docs.google.com/spreadsheets/d/13xIEyaqGgaUQkt8vAYV8sTct7ilM3EgAb669MQIkBRI/edit` -> `13xIEyaqGgaUQkt8vAYV8sTct7ilM3EgAb669MQIkBRI`
 
 ### Configuration
-This goes into `src/main/resources/application.yml` for production and `src/test/resources/application.yml` for integration tests.
+This goes into environment specific config files
+`src/main/resources/application.yml` is default and has acceptance configs
+`src/main/resources/application-production.yml` for production
+`src/test/resources/application.yml` for integration tests.
 
 ## Managing Courses
 To add new courses, add a new sheet at the bottom of Google Spreadsheet, by clicking the "+" button.
@@ -61,8 +69,8 @@ Any sheet with an asterisk in its name, for example `This course is not shown*` 
 
 # Deploying
 
-Travis is deploying to Cloud Foundry (user is redi-project-tenjin@googlegroups.com). No manual deploys
-should ever be needed / done. Simply run all tests locally and push to github:
+Travis is deploying to Cloud Foundry (user is redi-project-tenjin@googlegroups.com) to acceptance and then to production, if tests pass.
+No manual deploys should ever be needed / done. Simply run all tests locally and push to github:
 
 `./ship.sh`
 
