@@ -74,7 +74,7 @@ Login to the account:
 ```bash
 cf login -a https://api.run.pivotal.io
 # enter your credentials (username redi-project-tenjin@googlegroups.com, PW in Last Pass)
-# select desired space, e.g. "development". Org should be preselected to "tenjin".
+# select desired space, e.g. "acceptance". Org should be preselected to "tenjin".
 cf logs backend-tenjin
 ```
 
@@ -87,7 +87,7 @@ You can get them by `cf env tenjin-backend `
 The output will be
 
 ```
-Getting env variables for app tenjin-backend in org tenjin / space development as ...
+Getting env variables for app tenjin-backend in org tenjin / space production as ...
 ...
 snip
 ...

@@ -31,4 +31,4 @@ jobs:
       deploy:
         <<: *cloudfoundry
         manifest: manifest.yml
-        space: development
+        space: production
