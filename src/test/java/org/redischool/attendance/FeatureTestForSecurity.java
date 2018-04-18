@@ -47,10 +47,10 @@ public class FeatureTestForSecurity extends FeatureTestScaffolding {
     public void testCourseDetailsAreProtectedByBasicAuth() throws Exception {
         goTo("http://localhost:" + port + "/");
         find(By.xpath("//a[text()='" + COURSE_NAME + "']")).click();
-        assertThat($("h1#courseName").text()).isNull();
+        assertThat($("h1#courseName").texts()).isEmpty();
 
         goTo("http://foo:bar@localhost:" + port + "/");
         find(By.xpath("//a[text()='" + COURSE_NAME + "']")).click();
-        assertThat($("h1#courseName").text()).isEqualTo(COURSE_NAME);
+        assertThat($("h1#courseName").first().text()).isEqualTo(COURSE_NAME);
     }
 }

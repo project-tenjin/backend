@@ -16,7 +16,7 @@ class CloudSecurityConfig extends WebSecurityConfigurerAdapter {
     void configureGlobal(AuthenticationManagerBuilder auth, Environment environment) throws Exception {
         auth.inMemoryAuthentication()
                 .withUser(environment.getProperty("credentials.username"))
-                .password(environment.getProperty("credentials.password"))
+                .password(String.format("{noop}%s", environment.getProperty("credentials.password")))
                 .authorities("ROLE_USER");
     }
 

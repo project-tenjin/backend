@@ -9,6 +9,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
 import java.util.Arrays;
+import java.util.Collections;
 
 import static org.mockito.BDDMockito.given;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -36,14 +37,5 @@ public class CourseSummaryControllerTests {
                 .andExpect(status().isOk())
                 .andExpect(view().name("courseList"))
                 .andExpect(model().attribute("courses", Arrays.asList(new CourseSummary(0, "class1"), new CourseSummary(0, "class2"))));
-    }
-
-    @Test
-    public void testRenderCourseDetailsForNonExistingCourse() throws Exception {
-        given(courseSummaryRepository.getCourses())
-                .willReturn(Arrays.asList(new CourseSummary(0, "class1"), new CourseSummary(1, "class2")));
-
-        mvc.perform(get("/courses?name=not_a_course"))
-                .andExpect(status().isNotFound());
     }
 }

@@ -78,8 +78,8 @@ public class FeatureTests extends FeatureTestScaffolding {
     public void testListOfCoursesIsDisplayed() throws Exception {
         goTo(getBaseUrl());
 
-        assertThat($("ul").text()).contains(COURSE_NAME);
-        assertThat($("ul").text()).contains(OTHER_COURSE_NAME);
+        assertThat($("ul").first().text()).contains(COURSE_NAME);
+        assertThat($("ul").last().text()).contains(OTHER_COURSE_NAME);
     }
 
     @Test
@@ -87,10 +87,10 @@ public class FeatureTests extends FeatureTestScaffolding {
         goTo(getBaseUrl());
         selectCourse(COURSE_NAME);
 
-        assertThat($("h1#courseName").text()).isEqualTo(COURSE_NAME);
+        assertThat($("h1#courseName").first().text()).isEqualTo(COURSE_NAME);
 
-        assertThat($("tr:nth-child(2) > td:nth-child(1)").text()).isEqualTo(FIRST_STUDENT);
-        assertThat($("tr:last-child > td:nth-child(1)").text()).isEqualTo(LAST_STUDENT);
+        assertThat($("tr:nth-child(2) > td:nth-child(1)").first().text()).isEqualTo(FIRST_STUDENT);
+        assertThat($("tr:last-child > td:nth-child(1)").first().text()).isEqualTo(LAST_STUDENT);
     }
 
     @Test
@@ -99,9 +99,9 @@ public class FeatureTests extends FeatureTestScaffolding {
         selectCourse(COURSE_NAME);
 
         assertThat($("form")).isNotEmpty();
-        assertThat($("table > tbody > tr:nth-of-type(2) > td:nth-of-type(2) > input").value()).isEqualTo("P");
-        assertThat($("table > tbody > tr:nth-of-type(2) > td:nth-of-type(3) > input").value()).isEqualTo("L");
-        assertThat($("table > tbody > tr:nth-of-type(2) > td:nth-of-type(4) > input").value()).isEqualTo("U");
+        assertThat($("table > tbody > tr:nth-of-type(2) > td:nth-of-type(2) > input").first().value()).isEqualTo("P");
+        assertThat($("table > tbody > tr:nth-of-type(2) > td:nth-of-type(3) > input").first().value()).isEqualTo("L");
+        assertThat($("table > tbody > tr:nth-of-type(2) > td:nth-of-type(4) > input").first().value()).isEqualTo("U");
     }
 
     @Test
@@ -111,9 +111,9 @@ public class FeatureTests extends FeatureTestScaffolding {
 
         assertThat($("select")).isNotEmpty();
 
-        assertThat($("select > option:first-of-type").text()).isEqualTo("Please select a date");
-        assertThat($("select > option:nth-of-type(2)").text()).isEqualTo("4/24");
-        assertThat($("select > option:last-of-type").text()).isEqualTo("7/13");
+        assertThat($("select > option:first-of-type").first().text()).isEqualTo("Please select a date");
+        assertThat($("select > option:nth-of-type(2)").first().text()).isEqualTo("4/24");
+        assertThat($("select > option:last-of-type").first().text()).isEqualTo("7/13");
     }
 
     @Test
@@ -141,7 +141,7 @@ public class FeatureTests extends FeatureTestScaffolding {
         $("#submit").click();
 
         assertThat(getDriver().getCurrentUrl()).endsWith("/thanks");
-        assertThat($("body").text()).contains("Thanks");
+        assertThat($("body").first().text()).contains("Thanks");
 
         List<List<Object>> attendanceStateInSpreadsheet = fetchAttendanceFromSpreadsheet();
         for (int i = 0; i < selectedAttendanceStates.size(); i++) {
