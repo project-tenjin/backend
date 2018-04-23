@@ -1,5 +1,6 @@
 package org.redischool.attendance.details;
 
+import com.google.api.client.googleapis.json.GoogleJsonResponseException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -8,12 +9,8 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import javax.websocket.server.PathParam;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-import java.time.Instant;
-import java.time.ZoneOffset;
-import java.time.format.DateTimeFormatter;
-import java.util.*;
+import java.util.Date;
+import java.util.NoSuchElementException;
 
 
 @Controller
@@ -76,8 +73,8 @@ public class CourseDetailsController {
         }
     }
 
-    @ExceptionHandler(NoSuchElementException.class)
-    ResponseEntity<String> handleNoSuchElementException() {
+    @ExceptionHandler({NoSuchElementException.class, GoogleJsonResponseException.class})
+    ResponseEntity<String> handleNoSuchElementException(Exception ex) {
         return new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
 }
