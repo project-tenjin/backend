@@ -35,11 +35,14 @@ public class CourseDetailsControllerTests {
     private CourseDetailsRepository courseDetailsRepository;
 
     @Mock
+    private OktaGroupsCourseAccessValidator courseOwnerValidator;
+
+    @Mock
     private CourseHelper courseHelper;
 
     @Before
     public void setUp() throws Exception {
-        CourseDetailsController controller = new CourseDetailsController(courseDetailsRepository, courseHelper);
+        CourseDetailsController controller = new CourseDetailsController(courseDetailsRepository, courseHelper, courseOwnerValidator);
         mvc = MockMvcBuilders.standaloneSetup(controller).build();
     }
 
@@ -85,6 +88,15 @@ public class CourseDetailsControllerTests {
     }
 
     @Test
+    public void testGetCourseReturns403PageWhenUserDoesNotHavePermissionsForCourse() throws Exception {
+        doThrow(new UserAccessDeniedException("no permissions"))
+                .when(courseOwnerValidator).validatePermissions(any(), eq("course 1"));
+
+        mvc.perform(get("/courses/?name=" + "course 1"))
+                .andExpect(view().name("403"));
+    }
+
+    @Test
     public void testGetAttendanceForCourseAndDate() throws Exception {
         String courseName = "courseName";
         String date = "4/20";
@@ -105,6 +117,17 @@ public class CourseDetailsControllerTests {
                 .andExpect(jsonPath("$.date").value(date))
                 .andExpect(jsonPath("$.attendances.student1").value("P"))
                 .andExpect(jsonPath("$.attendances.student2").value("L"));
+    }
+
+    @Test
+    public void testGetAttendanceReturns403WhenUserDoesNotHavePermissionsForCourse() throws Exception {
+        doThrow(new UserAccessDeniedException("no permissions"))
+                .when(courseOwnerValidator).validatePermissions(any(), eq("course 1"));
+
+        mvc.perform(get("/attendance")
+                .param("date", "4/20")
+                .param("courseName", "course 1"))
+                .andExpect(view().name("403"));
     }
 
     @Test
@@ -141,5 +164,15 @@ public class CourseDetailsControllerTests {
                 .param("courseName", courseName))
                 .andExpect(status().is3xxRedirection())
                 .andExpect(redirectedUrl("/courses?name=" + courseName + "&error=Date required"));
+    }
+
+    @Test
+    public void testPostAttendanceReturns403WhenUserDoesNotHavePermissionsForCourse() throws Exception {
+        doThrow(new UserAccessDeniedException("no permissions"))
+                .when(courseOwnerValidator).validatePermissions(any(), eq("course 1"));
+
+        mvc.perform(post("/attendance")
+                .param("courseName", "course 1"))
+                .andExpect(view().name("403"));
     }
 }

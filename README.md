@@ -8,15 +8,22 @@ Java Spring app for project Tenjin.
 
 # Requirements
 
-* Ruby (>= 2)
 * Java 8
+* Ruby (>= 2) (for test and dev, not in prod)
 * LastPass access (user redi-project-tenjin@googlegroups.com)
 * [CF CLI](https://github.com/cloudfoundry/cli#downloads)
 * [Travis CLI](https://github.com/travis-ci/travis.rb#installation)
+* [Okta Admin console](https://dev-411538-admin.oktapreview.com/dev/console)
 
 # Running locally
 
-* decrypt Google Sheets credentials: `travis encrypt-file -d --key KEY_FROM_LASTPASS --iv IV_FROM_LASTPASS src/main/resources/google_sheets_credentials.json.enc src/main/resources/google_sheets_credentials.json`
+* First, you need to decrypt encrypted files. Get the key and iv from Lastpass and set as env variables:
+    * `export KEY_FROM_LASTPASS="<key>"`
+    * `export IV_FROM_LASTPASS="<iv>"`
+
+  and then run shell script:
+`./decrypt_files.sh`
+
 * `./gradlew bootRun`
 
 ## Running the tests
@@ -71,26 +78,25 @@ cf logs backend-tenjin
 ```
 
 # Security
-## Basic Auth
-Cloud Foundry is configured with two environment variables with the username and password for basic auth.
+## OKTA (Single Sign On)
 
-You can get them by `cf env tenjin-backend `
+### Login
+Okta is an integrated identity and mobility management service. Built from the ground up in the cloud. We have a account setup for test and acceptance and can be managed here:
+[Okta Admin console](https://dev-411538-admin.oktapreview.com/dev/console)
 
-The output will be
+`spring-security-oauth2` has easy integration with okta. Configurations need to be setup in `application.yml` for `security.oauth2` config and the application should be configured with `@EnableOAuth2Sso`.
+More info on how to setup the app can be found [here](https://developer.okta.com/blog/2017/11/20/add-sso-spring-boot-15-min)
 
-```
-Getting env variables for app tenjin-backend in org tenjin / space production as ...
-...
-snip
-...
-User-Provided:
-CREDENTIALS_USERNAME: userNameFromLastPass
-CRENTIALS_PASSWORD passwordFromLastPass
-```
+In Okta, An App called `Tenjin Attendance App` is created and users who are allowed to access the app, can be added to the app on the Okta Admin console.
+App configurations should be :
+* Type: Web
+* Allowed grant types : Authorization Code
+* Login redirect URIs: All environements that use this app should be configured here. For e.g.: http://localhost:8080/authorization-code/callback
+* On creation, a new client id and secret is generated which should be added to the `application.yml`.
 
-These were set at one point with the commands from the secure note `Environment Variables for basic auth` in lastpass.
+### Access Control (Course Permissions)
 
-```
-cf set-env tenjin-backend CREDENTIALS_USERNAME userNameFromLastPass
-cf set-env tenjin-backend CREDENTIALS_PASSWORD passwordFromLastPass
-```
+List of courses can be viewed by all users who are added to the app but viewing the attendance of students and editing the attendance is only permissible by users who are configured in the right group on the Okta Admin console.
+To add a new course: Create a new group in Okta Admin console, with the EXACT same NAME and add users who should have access to the course to the new group.
+Implementation of the same can be found in `OktaGroupsCourseAccessValidator` class. Group names of the user are extracted from the access token claims.
+Detailed explanation of how to setup the access token claims can be found [here](https://developer.okta.com/blog/2017/10/13/okta-groups-spring-security).

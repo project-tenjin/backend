@@ -8,6 +8,10 @@ build
 # unencrypted credentials
 src/main/resources/google_sheets_credentials.json
 src/main/resources/google_sheets_acceptance_credentials.json
+# okta credentials are in:
+src/main/resources/application-production.yml
+src/main/resources/application.yml
+src/test/resources/application.yml
 
 # Compiled class file
 *.class

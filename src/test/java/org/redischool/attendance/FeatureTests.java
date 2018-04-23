@@ -13,6 +13,7 @@ import org.redischool.attendance.spreadsheet.GoogleSheetsApi;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import java.util.ArrayList;
@@ -29,6 +30,7 @@ import static org.springframework.boot.test.context.SpringBootTest.WebEnvironmen
 
 @SpringBootTest(webEnvironment = RANDOM_PORT)
 @RunWith(SpringJUnit4ClassRunner.class)
+@ActiveProfiles("test")
 public class FeatureTests extends FeatureTestScaffolding {
 
     private static WebDriver driver;
@@ -190,10 +192,6 @@ public class FeatureTests extends FeatureTestScaffolding {
             selectedAttendanceStates.add(intToAttendanceState(randomRadioIndex));
         }
         return selectedAttendanceStates;
-    }
-
-    private void selectCourse(String courseName) {
-        find(By.xpath("//a[text()='" + courseName + "']")).click();
     }
 
     private void selectDate() {

@@ -4,19 +4,13 @@ import com.google.api.services.sheets.v4.model.Sheet;
 import com.google.api.services.sheets.v4.model.SheetProperties;
 import com.mscharhag.oleaster.runner.OleasterRunner;
 import org.junit.runner.RunWith;
-import org.redischool.attendance.details.CourseDetails;
-import org.redischool.attendance.details.CourseDetailsRepository;
 import org.redischool.attendance.spreadsheet.GoogleSheetsApi;
-
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
 
 import static com.mscharhag.oleaster.runner.StaticRunnerSupport.*;
 import static java.util.Arrays.asList;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.BDDMockito.given;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.mock;
 
 @RunWith(OleasterRunner.class)
 public class CourseSummaryRepositoryTest {
