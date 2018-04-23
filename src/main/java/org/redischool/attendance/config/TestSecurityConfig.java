@@ -5,9 +5,10 @@ import org.springframework.context.annotation.Profile;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 
+
 @Configuration
-@Profile("!cloud")
-public class LocalSecurityConfig extends WebSecurityConfigurerAdapter {
+@Profile("test")
+public class TestSecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Override
     protected void configure(HttpSecurity httpSecurity) throws Exception {
@@ -15,7 +16,7 @@ public class LocalSecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatcher("/**")
                 .authorizeRequests()
                 .anyRequest()
-                .anonymous()
+                .permitAll()
                 .and()
                 .csrf().disable();
     }

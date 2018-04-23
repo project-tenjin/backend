@@ -30,7 +30,8 @@ dependencies {
     compile("org.springframework.boot:spring-boot-starter-web:${springBootVersion}")
     compile("org.springframework.boot:spring-boot-starter-thymeleaf:${springBootVersion}")
     compile('org.springframework.boot:spring-boot-starter-security')
-
+    compile('org.springframework.security.oauth.boot:spring-security-oauth2-autoconfigure:2.0.1.RELEASE')
+    compile('org.springframework.security.oauth:spring-security-oauth2:2.2.0.RELEASE')
     compile('com.google.apis:google-api-services-sheets:v4-rev516-1.23.0')
 
     runtime('org.springframework.boot:spring-boot-devtools')

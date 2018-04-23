@@ -11,6 +11,9 @@ cache:
 before_install:
 - openssl aes-256-cbc -K $encrypted_428d7cee0894_key -iv $encrypted_428d7cee0894_iv -in src/main/resources/google_sheets_credentials.json.enc -out src/main/resources/google_sheets_credentials.json -d
 - openssl aes-256-cbc -K $encrypted_428d7cee0894_key -iv $encrypted_428d7cee0894_iv -in src/main/resources/google_sheets_acceptance_credentials.json.enc -out src/main/resources/google_sheets_acceptance_credentials.json -d
+- openssl aes-256-cbc -K $encrypted_428d7cee0894_key -iv $encrypted_428d7cee0894_iv -in src/main/resources/application-production.yml.enc -out src/main/resources/application-production.yml -d
+- openssl aes-256-cbc -K $encrypted_428d7cee0894_key -iv $encrypted_428d7cee0894_iv -in src/main/resources/application.yml.enc -out src/main/resources/application.yml -d
+- openssl aes-256-cbc -K $encrypted_428d7cee0894_key -iv $encrypted_428d7cee0894_iv -in src/test/resources/application.yml.enc -out src/test/resources/application.yml -d
 jobs:
   include:
     - stage: test
