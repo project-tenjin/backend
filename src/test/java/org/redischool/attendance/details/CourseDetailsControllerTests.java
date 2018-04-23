@@ -1,5 +1,9 @@
 package org.redischool.attendance.details;
 
+import com.google.api.client.googleapis.json.GoogleJsonError;
+import com.google.api.client.googleapis.json.GoogleJsonResponseException;
+import com.google.api.client.http.HttpHeaders;
+import com.google.api.client.http.HttpResponseException;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -8,9 +12,12 @@ import org.mockito.runners.MockitoJUnitRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
-import java.util.*;
+import java.util.Collections;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
 
-import static java.util.Arrays.*;
+import static java.util.Arrays.asList;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Matchers.*;
 import static org.mockito.Mockito.doThrow;
@@ -60,6 +67,21 @@ public class CourseDetailsControllerTests {
                 .andExpect(model().attribute("courseDetails", returnedCourseDetails))
                 .andExpect(model().attribute("datesMap", datesMap))
                 .andExpect(model().attribute("closestCourseDate", closestCourseDate));
+    }
+
+    @Test
+    public void testErrorWhenCourseNotFound() throws Exception {
+        given(courseDetailsRepository.getCourseDetails("doesnotexist")).willThrow(
+                new RuntimeException(
+                        new GoogleJsonResponseException(
+                                new HttpResponseException.Builder(400, "Bad Request", new HttpHeaders()),
+                                new GoogleJsonError()
+                        )
+                )
+        );
+
+        mvc.perform(get("/courses/?name=" + "doesnotexist"))
+                .andExpect(status().isNotFound());
     }
 
     @Test
