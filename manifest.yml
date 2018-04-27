@@ -1,7 +1,7 @@
 ---
 applications:
 - name: tenjin-backend
-  path: build/libs/project-tenjin-1.0-SNAPSHOT.jar 
+  path: build/libs/project-tenjin.jar
   env:
     SPRING_PROFILES_ACTIVE: production
 
