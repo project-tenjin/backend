@@ -24,7 +24,7 @@ nav {
     justify-content: center;
 }
 #content {
-    padding: 16px;
+    padding: 16px 16px 16px 32px ;
     margin-top: 8px;
     width: 280px;
     background-color: #ffffff;
@@ -39,7 +39,7 @@ nav {
     min-height: 80%;
 }
 #courseList > ul {
-    list-style: none;
+    list-style: square;
 }
 #courseList a {
     color: #3E7889;
