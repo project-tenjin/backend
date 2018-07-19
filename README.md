@@ -48,24 +48,8 @@ This goes into environment specific config files
 `src/main/resources/application-production.yml` for production
 `src/test/resources/application.yml` for integration tests.
 
-## Managing Courses
-To add new courses, add a new sheet at the bottom of Google Spreadsheet, by clicking the "+" button.
-
-![finding the plus icon](docs/images/add_course.png?raw=true)
-
-Give the newly created sheet the name of your new course. Copy & Paste the structure of an existing course onto your
-new sheet and adjust the data accordingly.
-
-## Managing Students
-Students **must** be in row `B` of each course sheet. They **must** start in column `B:4`. There can be as many students as required.
-Simply add a new student row to add a new student or remove a row entirely to remove the student.
-There **must** not be any empty rows among the studens.
-
-## Managing Course Dates
-The first date of the course **must** start at `C:2` and the last three cells in the `C` row **must**  contain `Present`, `Late`, `Excused absence` and `Unexcused absence`.
-
-## Additional Information
-Any sheet with an asterisk in its name, for example `This course is not shown*` will not be listed in the app.
+## Managing Courses, Students and Course Dates
+This can be done in the spreadsheet in Google Sheets. Please refer to the [Admin user guide] (https://docs.google.com/document/d/1z9lAxz9RiwG7kkgZsX_en_9pqCNMZH6-5sIyLrLkLz0/edit#heading=h.tai0xfv6k8fe) to see how to.
 
 # Deploying
 
