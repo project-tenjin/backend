@@ -49,7 +49,7 @@ This goes into environment specific config files
 `src/test/resources/application.yml` for integration tests.
 
 ## Managing Courses, Students and Course Dates
-This can be done in the spreadsheet in Google Sheets. Please refer to the [Admin user guide] (https://docs.google.com/document/d/1z9lAxz9RiwG7kkgZsX_en_9pqCNMZH6-5sIyLrLkLz0/edit#heading=h.tai0xfv6k8fe) to see how to.
+This can be done in the spreadsheet in Google Sheets. Please refer to the [Admin user guide](https://docs.google.com/document/d/1z9lAxz9RiwG7kkgZsX_en_9pqCNMZH6-5sIyLrLkLz0) to see how to.
 
 # Deploying
 
