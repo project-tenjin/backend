@@ -27,6 +27,7 @@ jobs:
         space: acceptance
         manifest: manifest-acceptance.yml
     - stage: deploy to production
+      if: branch = master
       script: skip
       deploy:
         <<: *cloudfoundry
