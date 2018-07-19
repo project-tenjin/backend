@@ -100,3 +100,5 @@ List of courses can be viewed by all users who are added to the app but viewing 
 To add a new course: Create a new group in Okta Admin console, with the EXACT same NAME and add users who should have access to the course to the new group.
 Implementation of the same can be found in `OktaGroupsCourseAccessValidator` class. Group names of the user are extracted from the access token claims.
 Detailed explanation of how to setup the access token claims can be found [here](https://developer.okta.com/blog/2017/10/13/okta-groups-spring-security).
+
+Detailed explanation on how to add a new course in OKTA and give teachers permissions can be found in the [Admin guide](https://docs.google.com/document/d/1z9lAxz9RiwG7kkgZsX_en_9pqCNMZH6-5sIyLrLkLz0)
