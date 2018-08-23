@@ -8,7 +8,6 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.phantomjs.PhantomJSDriver;
 import org.openqa.selenium.phantomjs.PhantomJSDriverService;
 import org.openqa.selenium.remote.DesiredCapabilities;
-import org.openqa.selenium.support.ui.WebDriverWait;
 import org.springframework.boot.web.server.LocalServerPort;
 
 public abstract class FeatureTestScaffolding extends FluentAdapter {
@@ -32,5 +31,9 @@ public abstract class FeatureTestScaffolding extends FluentAdapter {
 
 	protected void selectCourse(String courseName) {
 		find(By.xpath("//a[text()='" + courseName + "']")).click();
+	}
+
+	protected boolean isCourseVisible(String courseName) {
+		return !find(By.xpath("//a[text()='" + courseName + "']")).isEmpty();
 	}
 }

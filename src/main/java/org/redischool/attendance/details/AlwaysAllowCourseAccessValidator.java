@@ -4,12 +4,16 @@ import org.springframework.context.annotation.Profile;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Component;
 
-import java.io.IOException;
-
 @Component
 @Profile("test")
 class AlwaysAllowCourseAccessValidator implements CourseAccessValidator {
-    public void validatePermissions(Authentication authentication, String courseName) throws IOException, UserAccessDeniedException {
+    @Override
+    public void validatePermissions(Authentication authentication, String courseName) {
         // allow access to all courses
+    }
+
+    @Override
+    public boolean hasPermissions(Authentication authentication, String courseName) {
+        return true;
     }
 }

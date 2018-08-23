@@ -1,29 +1,34 @@
 package org.redischool.attendance.details;
 
+import org.codehaus.jackson.map.ObjectMapper;
 import org.junit.Before;
 import org.junit.Test;
-import org.mockito.Mockito;
+import org.junit.runner.RunWith;
+import org.mockito.Mock;
+import org.mockito.junit.MockitoJUnitRunner;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.jwt.JwtHelper;
 import org.springframework.security.jwt.crypto.sign.MacSigner;
 
-import java.io.IOException;
 import java.util.HashMap;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.when;
 
+@RunWith(MockitoJUnitRunner.class)
 public class OktaGroupsCourseAccessValidatorTest {
-    Authentication authentication;
-    OktaGroupsCourseAccessValidator courseAccessValidator;
+    @Mock
+    private Authentication authentication;
+
+    private OktaGroupsCourseAccessValidator courseAccessValidator;
 
     @Before
-    public void setUp() throws Exception {
-        authentication = Mockito.mock(Authentication.class);
-        courseAccessValidator = new OktaGroupsCourseAccessValidator();
+    public void setUp() {
+        courseAccessValidator = new OktaGroupsCourseAccessValidator(new ObjectMapper());
     }
 
     @Test
-    public void validatePermissions_doesNotThrowWhenUserHasPermissions() throws IOException, UserAccessDeniedException {
+    public void validatePermissions_doesNotThrow_whenUserHasPermissions() throws UserAccessDeniedException {
         HashMap<Object, Object> authDetails = new HashMap<>();
         authDetails.put("tokenValue", tokenWithGroup("Chasing Unicorns"));
         when(authentication.getDetails()).thenReturn(authDetails);
@@ -32,12 +37,30 @@ public class OktaGroupsCourseAccessValidatorTest {
     }
 
     @Test(expected = UserAccessDeniedException.class)
-    public void validatePermissions_throwWhenUserDoesNotHavePermissions() throws IOException, UserAccessDeniedException {
+    public void validatePermissions_throws_whenUserDoesNotHavePermissions() throws UserAccessDeniedException {
         HashMap<Object, Object> authDetails = new HashMap<>();
         authDetails.put("tokenValue", tokenWithGroup("Chasing Unisus"));
         when(authentication.getDetails()).thenReturn(authDetails);
 
         courseAccessValidator.validatePermissions(authentication, "Chasing Unicorns");
+    }
+
+    @Test
+    public void hasPermissions_returnsTrue_whenUserHasPermissions() {
+        HashMap<Object, Object> authDetails = new HashMap<>();
+        authDetails.put("tokenValue", tokenWithGroup("Chasing Unicorns"));
+        when(authentication.getDetails()).thenReturn(authDetails);
+
+        assertThat(courseAccessValidator.hasPermissions(authentication, "Chasing Unicorns")).isTrue();
+    }
+
+    @Test
+    public void hasPermissions_returnsFalse_whenUserDoesNotHavePermissions() {
+        HashMap<Object, Object> authDetails = new HashMap<>();
+        authDetails.put("tokenValue", tokenWithGroup("Chasing Unisus"));
+        when(authentication.getDetails()).thenReturn(authDetails);
+
+        assertThat(courseAccessValidator.hasPermissions(authentication, "Chasing Unicorns")).isFalse();
     }
 
     private String tokenWithGroup(String groupName) {

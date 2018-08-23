@@ -4,7 +4,6 @@ import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.support.ui.WebDriverWait;
 import org.springframework.beans.factory.annotation.Value;
@@ -12,9 +11,11 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
+
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.boot.test.context.SpringBootTest.WebEnvironment.DEFINED_PORT;
-import static org.springframework.boot.test.context.SpringBootTest.WebEnvironment.RANDOM_PORT;
 
 @SpringBootTest(
         webEnvironment = DEFINED_PORT,
@@ -27,6 +28,9 @@ import static org.springframework.boot.test.context.SpringBootTest.WebEnvironmen
 @ActiveProfiles("cloud")
 public class FeatureTestForSecurity extends FeatureTestScaffolding {
 
+    // redi-project-tenjin@googlegroups.com has access to Chasing Unicorns but not to Android App. Configured in okta admin console with group settings
+    private static final String COURSE_NAME_I_CANNOT_ACCESS = "Android App";
+
     private static WebDriver driver;
 
     @Value("${okta.test.username}")
@@ -36,8 +40,10 @@ public class FeatureTestForSecurity extends FeatureTestScaffolding {
     private String password;
 
     @Before
-    public void setUp() throws Exception {
-        if (driver == null) {
+    public void setUp() {
+        boolean firstRun = driver == null;
+
+        if (firstRun) {
             driver = createWebDriver();
         }
 
@@ -53,24 +59,56 @@ public class FeatureTestForSecurity extends FeatureTestScaffolding {
     }
 
     @Test
-    public void testHasAccessOnlyToCoursesAssigned() throws Exception {
-        // redi-project-tenjin@googlegroups.com has access to Chasing Unicorns but not to Android App. Configured in okta admin console with group settings
-        loginViaOkta(driver);
-        selectCourse(COURSE_NAME);
-        assertThat($("h1#courseName").first().text()).isEqualTo(COURSE_NAME);
+    public void testSeesOnlyAssignedCourses() {
+        // ACT
+        goHome();
 
-        goTo(getBaseUrl());
-        selectCourse("Android App");
-        assertThat($("h1").first().text()).isEqualTo("You do not have permissions to view this course.");
-
+        // ASSERT
+        assertThat(isCourseVisible(COURSE_NAME)).isTrue();
+        assertThat(isCourseVisible(COURSE_NAME_I_CANNOT_ACCESS)).isFalse();
     }
 
-    private void loginViaOkta(WebDriver driver) {
+    @Test
+    public void testHasAccessOnlyToCoursesAssigned() {
+        // ARRANGE
+        goHome();
+
+        // ACT
+        selectCourse(COURSE_NAME);
+
+        // ASSERT
+        assertThat($("h1#courseName").first().text()).isEqualTo(COURSE_NAME);
+    }
+
+    @Test
+    public void testHasNoAccessToCoursersNotAssigned() throws UnsupportedEncodingException {
+        // ARRANGE
+        goHome();
+
+        // ACT
+        goTo(getBaseUrl() + "courses?name=" + URLEncoder.encode(COURSE_NAME_I_CANNOT_ACCESS, "utf-8"));
+
+        // ASSERT
+        assertThat($("h1").first().text()).isEqualTo("You do not have permissions to view this course.");
+    }
+
+    private void goHome() {
         goTo(getBaseUrl());
+
+        if (!authenticated()) {
+            loginViaOkta();
+        }
+    }
+
+    private boolean authenticated() {
+        return !url().contains("/login");
+    }
+
+    private void loginViaOkta() {
         $("#okta-signin-username").fill().withText(username);
         $("#okta-signin-password").fill().withText(password);
         $("#okta-signin-submit").submit();
-        WebDriverWait wait = new WebDriverWait(driver, 5);
+        WebDriverWait wait = new WebDriverWait(driver, 10);
         wait.until((fluentControl) -> driver.getCurrentUrl().contains("localhost"));
     }
 }

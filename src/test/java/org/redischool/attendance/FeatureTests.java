@@ -60,7 +60,7 @@ public class FeatureTests extends FeatureTestScaffolding {
     private String spreadSheetId;
 
     @Before
-    public void setUp() throws Exception {
+    public void setUp() {
         if (driver == null) {
             driver = createWebDriver();
         }
@@ -77,7 +77,7 @@ public class FeatureTests extends FeatureTestScaffolding {
     }
 
     @Test
-    public void testListOfCoursesIsDisplayed() throws Exception {
+    public void testListOfCoursesIsDisplayed() {
         goTo(getBaseUrl());
 
         assertThat($("ul").first().text()).contains(COURSE_NAME);
@@ -85,7 +85,7 @@ public class FeatureTests extends FeatureTestScaffolding {
     }
 
     @Test
-    public void testListOfStudentsIsDisplayedOnCoursePage() throws Exception {
+    public void testListOfStudentsIsDisplayedOnCoursePage() {
         goTo(getBaseUrl());
         selectCourse(COURSE_NAME);
 
@@ -96,7 +96,7 @@ public class FeatureTests extends FeatureTestScaffolding {
     }
 
     @Test
-    public void testFormForAttendanceStatusIsDisplayedPerStudentOnCoursePage() throws Exception {
+    public void testFormForAttendanceStatusIsDisplayedPerStudentOnCoursePage() {
         goTo(getBaseUrl());
         selectCourse(COURSE_NAME);
 
@@ -107,7 +107,7 @@ public class FeatureTests extends FeatureTestScaffolding {
     }
 
     @Test
-    public void testDatePickerIsDisplayedOnCoursePageWithDatesFromSpreadsheet() throws Exception {
+    public void testDatePickerIsDisplayedOnCoursePageWithDatesFromSpreadsheet() {
         goTo(getBaseUrl());
         selectCourse(COURSE_NAME);
 
@@ -119,7 +119,7 @@ public class FeatureTests extends FeatureTestScaffolding {
     }
 
     @Test
-    public void testAttendanceIsRefreshedWhenDateIsSelected() throws Exception {
+    public void testAttendanceIsRefreshedWhenDateIsSelected() {
         goTo(getBaseUrl());
         selectCourse(COURSE_NAME);
 
@@ -131,7 +131,7 @@ public class FeatureTests extends FeatureTestScaffolding {
     }
 
     @Test
-    public void testWeSeeASuccessMessageWhenWeSubmitTheDataFromTheCoursePage() throws Exception {
+    public void testWeSeeASuccessMessageWhenWeSubmitTheDataFromTheCoursePage() {
         goTo(getBaseUrl());
         selectCourse(COURSE_NAME);
 

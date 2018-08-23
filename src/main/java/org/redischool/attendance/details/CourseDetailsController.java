@@ -10,7 +10,6 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import javax.websocket.server.PathParam;
-import java.io.IOException;
 import java.util.Date;
 import java.util.NoSuchElementException;
 
@@ -36,7 +35,7 @@ public class CourseDetailsController {
     String showCourse(@PathParam("name") String name,
                       @PathParam("error") String error,
                       Model model,
-                      Authentication authentication) throws IOException, UserAccessDeniedException {
+                      Authentication authentication) throws UserAccessDeniedException {
         courseAccessValidator.validatePermissions(authentication, name);
 
         model.addAttribute("error", error);
@@ -55,7 +54,7 @@ public class CourseDetailsController {
     public CourseAttendance getAttendance(
             @RequestParam String courseName,
             @RequestParam String date,
-            Authentication authentication) throws IOException, UserAccessDeniedException {
+            Authentication authentication) throws UserAccessDeniedException {
         courseAccessValidator.validatePermissions(authentication, courseName);
 
         CourseAttendance courseAttendance = new CourseAttendance();
@@ -71,7 +70,7 @@ public class CourseDetailsController {
     public String postCourseAttendance(
             @ModelAttribute CourseAttendance courseAttendance,
             Authentication authentication
-    ) throws IOException, UserAccessDeniedException {
+    ) throws UserAccessDeniedException {
         final String courseName = courseAttendance.getCourseName();
         courseAccessValidator.validatePermissions(authentication, courseName);
         try {

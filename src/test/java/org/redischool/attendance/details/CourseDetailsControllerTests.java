@@ -8,7 +8,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.MockitoJUnitRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
@@ -18,8 +18,8 @@ import java.util.HashMap;
 import java.util.List;
 
 import static java.util.Arrays.asList;
+import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.BDDMockito.given;
-import static org.mockito.Matchers.*;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.verify;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -41,7 +41,7 @@ public class CourseDetailsControllerTests {
     private CourseHelper courseHelper;
 
     @Before
-    public void setUp() throws Exception {
+    public void setUp() {
         CourseDetailsController controller = new CourseDetailsController(courseDetailsRepository, courseHelper, courseOwnerValidator);
         mvc = MockMvcBuilders.standaloneSetup(controller).build();
     }
@@ -55,7 +55,7 @@ public class CourseDetailsControllerTests {
                 asList("4/24", "4/27"),
                 // 2017, 4, 24 | 2017, 4, 27
                 asList(new Date(1492992000000L), new Date(1493251200000L)));
-        List datesMap = Collections.singletonList(new HashMap() {{
+        List<Object> datesMap = Collections.singletonList(new HashMap<String, List<?>>() {{
             put("formatted", returnedCourseDetails.getFormattedDates());
             put("java", returnedCourseDetails.getJavaDates());
         }});
