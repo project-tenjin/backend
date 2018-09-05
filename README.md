@@ -43,6 +43,8 @@ setting the `JASMINE_CONFIG_PATH` manually (`bundle exec rake jasmine:ci JASMINE
 
 # Maintaining the Spreadsheet
 
+> **See the [Admin user guide](https://docs.google.com/document/d/1z9lAxz9RiwG7kkgZsX_en_9pqCNMZH6-5sIyLrLkLz0)**
+
 ## Integration with Google Sheets
 The spreadsheet is accessed by a service account (acceptance@tenjin-attendance.iam.gserviceaccount.com) associated to our team email (redi.project.tenjin@gmail.com). For the integration to work, the spreadsheet has to be shared (with editing rights) with the service account email.
 
