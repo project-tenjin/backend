@@ -26,8 +26,8 @@ before_install:
   -d
 jobs:
   include:
-  - stage: test
-    script: "./gradlew clean build"
+#  - stage: test
+#    script: "./gradlew clean build"
   - stage: deploy to acceptance
     script: skip
     deploy: &heroku
