@@ -58,7 +58,7 @@ public class FeatureTestForSecurity extends FeatureTestScaffolding {
         }
     }
 
-    @Test
+//    @Test
     public void testSeesOnlyAssignedCourses() {
         // ACT
         goHome();
@@ -68,7 +68,7 @@ public class FeatureTestForSecurity extends FeatureTestScaffolding {
         assertThat(isCourseVisible(COURSE_NAME_I_CANNOT_ACCESS)).isFalse();
     }
 
-    @Test
+//    @Test
     public void testHasAccessOnlyToCoursesAssigned() {
         // ARRANGE
         goHome();
@@ -80,7 +80,7 @@ public class FeatureTestForSecurity extends FeatureTestScaffolding {
         assertThat($("h1#courseName").first().text()).isEqualTo(COURSE_NAME);
     }
 
-    @Test
+//    @Test
     public void testHasNoAccessToCoursersNotAssigned() throws UnsupportedEncodingException {
         // ARRANGE
         goHome();
