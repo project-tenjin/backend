@@ -15,6 +15,7 @@ import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Service;
 
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.security.GeneralSecurityException;
@@ -29,10 +30,10 @@ import java.util.List;
 public class GoogleSheetsApi {
     public static final String RAW_VALUE_INPUT_OPTION = "RAW";
 
-    private String credentialsPath;
+    private String credentials;
 
-    public GoogleSheetsApi(@Value("${google.credentials_path}") String credentialsPath) {
-        this.credentialsPath = credentialsPath;
+    public GoogleSheetsApi(@Value("${google.credentials}") String credentials) {
+        this.credentials = credentials;
     }
 
     public List<Sheet> getSheets(String spreadsheetId) {
@@ -93,8 +94,7 @@ public class GoogleSheetsApi {
 
     private Sheets sheetsClient() {
         try {
-            Resource resource = new ClassPathResource(credentialsPath);
-            InputStream resourceInputStream = resource.getInputStream();
+            InputStream resourceInputStream = new ByteArrayInputStream(credentials.getBytes());
             GoogleCredential credential = GoogleCredential.fromStream(resourceInputStream)
                     .createScoped(SheetsScopes.all());
 
