@@ -27,10 +27,10 @@ import java.util.List;
 public class GoogleSheetsApi {
     public static final String RAW_VALUE_INPUT_OPTION = "RAW";
 
-    private String credentials;
+    private final String credentialsFile;
 
-    public GoogleSheetsApi(@Value("${google.credentials_path}") String credentials) {
-        this.credentials = credentials;
+    public GoogleSheetsApi(@Value("${google.credentials_path}") String credentialsFile) {
+        this.credentialsFile = credentialsFile;
     }
 
     public List<Sheet> getSheets(String spreadsheetId) {
@@ -91,7 +91,7 @@ public class GoogleSheetsApi {
 
     private Sheets sheetsClient() {
         try {
-            InputStream resourceInputStream = this.getClass().getClassLoader().getResourceAsStream(credentials);
+            InputStream resourceInputStream = this.getClass().getClassLoader().getResourceAsStream(credentialsFile);
             GoogleCredential credential = GoogleCredential.fromStream(resourceInputStream)
                     .createScoped(SheetsScopes.all());
 
