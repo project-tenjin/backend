@@ -11,11 +11,8 @@ import com.google.api.services.sheets.v4.model.Sheet;
 import com.google.api.services.sheets.v4.model.Spreadsheet;
 import com.google.api.services.sheets.v4.model.ValueRange;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.core.io.ClassPathResource;
-import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Service;
 
-import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.security.GeneralSecurityException;
@@ -32,7 +29,7 @@ public class GoogleSheetsApi {
 
     private String credentials;
 
-    public GoogleSheetsApi(@Value("${google.credentials}") String credentials) {
+    public GoogleSheetsApi(@Value("${google.credentials_path}") String credentials) {
         this.credentials = credentials;
     }
 
@@ -94,7 +91,7 @@ public class GoogleSheetsApi {
 
     private Sheets sheetsClient() {
         try {
-            InputStream resourceInputStream = new ByteArrayInputStream(credentials.getBytes());
+            InputStream resourceInputStream = this.getClass().getClassLoader().getResourceAsStream(credentials);
             GoogleCredential credential = GoogleCredential.fromStream(resourceInputStream)
                     .createScoped(SheetsScopes.all());
 
