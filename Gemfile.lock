@@ -10,12 +10,14 @@ GEM
     phantomjs (2.1.1.0)
     rack (2.0.3)
     rake (12.1.0)
+    webrick (1.7.0)
 
 PLATFORMS
   ruby
 
 DEPENDENCIES
   jasmine
+  webrick
 
 BUNDLED WITH
    1.14.4
