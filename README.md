@@ -17,14 +17,24 @@ Java Spring app for project Tenjin.
 
 # Running locally
 
-* First, you need to decrypt encrypted files. Get the key and iv from Lastpass and set as env variables:
+* clone the project with git
+* make sure you have a JDK that supports Java 8
+  * e.g. jdk 8 or 11, but 17 does not support java 8 anymore
+* you need to decrypt encrypted files. Get the key and iv from Lastpass and set as env variables:
     * `export KEY_FROM_LASTPASS="<key>"`
     * `export IV_FROM_LASTPASS="<iv>"`
-
-  and then run shell script:
-`./decrypt_files.sh`
-
-* `./gradlew bootRun`
+    * then run shell script:
+    ```bash
+    ./decrypt_files.sh
+    ```
+* now build and start the project once with gradle:
+    ```bash
+    ./gradlew bootRun
+    ```
+  * this will download all dependencies, compile the code and execute tests
+  * then it will even start the app 
+  * make sure everything is working fine and there is no error message in the output
+* you can import the project into your favourite IDE, it should recognize the gradle config files and configure the project accordingly
 
 ## Running the tests
 
