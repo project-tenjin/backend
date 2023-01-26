@@ -1,0 +1,21 @@
+name: Docker Image CI
+
+on:
+  push:
+    branches: [ "master" ]
+  pull_request:
+    branches: [ "master" ]
+
+jobs:
+
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v3
+    - name: Build the Docker test image
+      run: docker build . --file Dockerfile --target tester --tag backend:$(date +%s)
+
+    - name: Build the Docker runner image
+      run: docker build . --file Dockerfile --target runner --tag backend:$(date +%s)      
