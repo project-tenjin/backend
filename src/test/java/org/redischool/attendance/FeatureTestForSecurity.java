@@ -11,8 +11,8 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
-import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.boot.test.context.SpringBootTest.WebEnvironment.DEFINED_PORT;
@@ -81,12 +81,12 @@ public class FeatureTestForSecurity extends FeatureTestScaffolding {
     }
 
     @Test
-    public void testHasNoAccessToCoursersNotAssigned() throws UnsupportedEncodingException {
+    public void testHasNoAccessToCoursersNotAssigned() {
         // ARRANGE
         goHome();
 
         // ACT
-        goTo(getBaseUrl() + "courses?name=" + URLEncoder.encode(COURSE_NAME_I_CANNOT_ACCESS, "utf-8"));
+        goTo(getBaseUrl() + "courses?name=" + URLEncoder.encode(COURSE_NAME_I_CANNOT_ACCESS, StandardCharsets.UTF_8));
 
         // ASSERT
         assertThat($("h1").first().text()).isEqualTo("You do not have permissions to view this course.");

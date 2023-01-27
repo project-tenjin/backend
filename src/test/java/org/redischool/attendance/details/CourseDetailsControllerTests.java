@@ -101,7 +101,7 @@ public class CourseDetailsControllerTests {
         String courseName = "courseName";
         String date = "4/20";
 
-        HashMap<String, String> courseAttendance = new HashMap<String, String>() {{
+        HashMap<String, String> courseAttendance = new HashMap<>() {{
             put("student1", "P");
             put("student2", "L");
         }};
@@ -112,7 +112,7 @@ public class CourseDetailsControllerTests {
                 .param("date", date)
                 .param("courseName", courseName))
                 .andExpect(status().isOk())
-                .andExpect(content().contentType("application/json;charset=UTF-8"))
+                .andExpect(content().contentType("application/json"))
                 .andExpect(jsonPath("$.courseName").value(courseName))
                 .andExpect(jsonPath("$.date").value(date))
                 .andExpect(jsonPath("$.attendances.student1").value("P"))
@@ -142,7 +142,7 @@ public class CourseDetailsControllerTests {
                 .andExpect(status().is3xxRedirection())
                 .andExpect(redirectedUrl("/thanks"));
 
-        HashMap<String, String> courseAttendance = new HashMap<String, String>() {{
+        HashMap<String, String> courseAttendance = new HashMap<>() {{
             put("student1", "P");
             put("student2", "L");
         }};

@@ -125,8 +125,8 @@ public class CourseDetailsRepositoryTest {
 
             describe("update course", () -> {
                 it("doesn't do anything with empty update data", () -> {
-                    courseDetailsRepository.updateAttendance("1", "", new HashMap<String, String>());
-                    verifyZeroInteractions(googleSheetsApi);
+                    courseDetailsRepository.updateAttendance("1", "", new HashMap<>());
+                    verifyNoInteractions(googleSheetsApi);
                 });
 
                 it("throws an error with no date", () -> {
@@ -142,9 +142,9 @@ public class CourseDetailsRepositoryTest {
                     );
                     given(googleSheetsApi.getRange(spreadsheetId, courseName, "A:ZZ")).willReturn(sheetData);
 
-                    assertThatThrownBy(() -> {
-                        courseDetailsRepository.updateAttendance("Unicorns", "WRONG_DATE", new HashMap<String, String>() {{ put("Student A", "P");}});
-                    }).isInstanceOf(IllegalArgumentException.class).hasMessageContaining("Please select a date.");
+                    assertThatThrownBy(() -> courseDetailsRepository.updateAttendance(
+                            "Unicorns", "WRONG_DATE", new HashMap<>() {{ put("Student A", "P");}})
+                    ).isInstanceOf(IllegalArgumentException.class).hasMessageContaining("Please select a date.");
                 });
 
                 it("updates the course attendance data", () -> {
@@ -163,7 +163,7 @@ public class CourseDetailsRepositoryTest {
                             asList("", students.get(3), "", "U")
                     );
 
-                    HashMap<String, String> updateData = new HashMap<String, String>() {{
+                    HashMap<String, String> updateData = new HashMap<>() {{
                         put(students.get(1), "E");
                         put(students.get(3), "P");
                     }};
@@ -201,7 +201,7 @@ public class CourseDetailsRepositoryTest {
                             asList("", students.get(3), "", "")
                     );
 
-                    HashMap<String, String> updateData = new HashMap<String, String>() {{
+                    HashMap<String, String> updateData = new HashMap<>() {{
                         put(students.get(0), "P");
                         put(students.get(1), "U");
                         put(students.get(2), "L");

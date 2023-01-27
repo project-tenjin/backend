@@ -1,6 +1,7 @@
 package org.redischool.attendance;
 
-import io.github.bonigarcia.wdm.PhantomJsDriverManager;
+import io.github.bonigarcia.wdm.config.DriverManagerType;
+import io.github.bonigarcia.wdm.managers.PhantomJsDriverManager;
 import org.fluentlenium.adapter.FluentAdapter;
 import org.junit.BeforeClass;
 import org.openqa.selenium.By;
@@ -19,7 +20,7 @@ public abstract class FeatureTestScaffolding extends FluentAdapter {
 
 	@BeforeClass
 	public static void setupClass() {
-		PhantomJsDriverManager.getInstance().setup();
+		PhantomJsDriverManager.getInstance(DriverManagerType.PHANTOMJS).setup();
 	}
 
 	protected WebDriver createWebDriver() {

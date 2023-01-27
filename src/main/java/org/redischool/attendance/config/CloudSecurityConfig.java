@@ -18,12 +18,7 @@ class CloudSecurityConfig extends OAuth2SsoDefaultConfiguration {
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
-        http
-                .authorizeRequests()
-                .anyRequest().permitAll()
-                .and()
-                .csrf().disable();
-
+        http.csrf().disable();
         super.configure(http);
         http.logout().logoutSuccessUrl("/");
     }
