@@ -19,7 +19,7 @@ jobs:
       run: docker build . --file Dockerfile --target tester --tag "backend:tester_${{github.sha}}"
     
     - name: Test Javascript
-      run: docker run --name backend-tester --rm "backend:${{github.sha}}"
+      run: docker run --name backend-tester --rm "backend:tester_${{github.sha}}"
 
     - name: Build Java runner
       run: docker build . --file Dockerfile --target runner --tag "backend:${{github.sha}}"
