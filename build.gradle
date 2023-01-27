@@ -1,6 +1,6 @@
 buildscript {
     ext {
-        springBootVersion = '2.0.1.RELEASE'
+        springBootVersion = '2.6.8'
     }
     repositories {
         mavenCentral()
@@ -16,11 +16,11 @@ apply plugin: 'io.spring.dependency-management'
 
 jar {
     baseName = 'project-tenjin'
-    version = '1.0-SNAPSHOT'
+    version = '2.0-SNAPSHOT'
 }
 
-sourceCompatibility = '1.8'
-targetCompatibility = '1.8'
+sourceCompatibility = '11'
+targetCompatibility = '11'
 
 repositories {
     mavenCentral()
@@ -31,9 +31,9 @@ dependencies {
     compile("org.springframework.boot:spring-boot-starter-web:${springBootVersion}")
     compile("org.springframework.boot:spring-boot-starter-thymeleaf:${springBootVersion}")
     compile('org.springframework.boot:spring-boot-starter-security')
-    compile('org.springframework.security.oauth.boot:spring-security-oauth2-autoconfigure:2.0.1.RELEASE')
-    compile('org.springframework.security.oauth:spring-security-oauth2:2.2.0.RELEASE')
-    compile('com.google.apis:google-api-services-sheets:v4-rev516-1.23.0')
+    compile("org.springframework.security.oauth.boot:spring-security-oauth2-autoconfigure:${springBootVersion}")
+    compile('org.springframework.security.oauth:spring-security-oauth2:2.5.2.RELEASE')
+    compile('com.google.apis:google-api-services-sheets:v4-rev612-1.25.0')
 
     runtime('org.springframework.boot:spring-boot-devtools')
 
@@ -42,13 +42,17 @@ dependencies {
 
     testCompile('xml-apis:xml-apis:1.4.01')
 
-    testCompile('org.fluentlenium:fluentlenium-core:3.5.2')
-    testCompile('org.fluentlenium:fluentlenium-junit:3.5.2')
-    testCompile('org.fluentlenium:fluentlenium-assertj:3.5.2')
-    testCompile('org.seleniumhq.selenium:selenium-java:3.8.1')
-    testCompile('org.seleniumhq.selenium:selenium-support:3.8.1')
-    testCompile('io.github.bonigarcia:webdrivermanager:1.7.0')
+    testCompile('org.fluentlenium:fluentlenium-core:4.8.0')
+    testCompile('org.fluentlenium:fluentlenium-junit:4.8.0')
+    testCompile('org.fluentlenium:fluentlenium-assertj:4.8.0')
+    testCompile('org.seleniumhq.selenium:selenium-java:3.141.59')
+    testCompile('io.github.bonigarcia:webdrivermanager:4.4.3')
     testCompile('com.github.detro:ghostdriver:2.1.0')
+}
+
+tasks.withType(JavaCompile) {
+    options.compilerArgs << '-Xlint:unchecked'
+    options.deprecation = true
 }
 
 task stage(dependsOn: ['build', 'clean'])

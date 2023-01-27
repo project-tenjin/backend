@@ -1,6 +1,6 @@
 package org.redischool.attendance.details;
 
-import org.codehaus.jackson.map.ObjectMapper;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.context.annotation.Profile;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.jwt.Jwt;
@@ -15,7 +15,7 @@ import java.util.Map;
 @Profile("!test")
 public class OktaGroupsCourseAccessValidator implements CourseAccessValidator {
 
-    private ObjectMapper objectMapper;
+    private final ObjectMapper objectMapper;
 
     public OktaGroupsCourseAccessValidator(ObjectMapper objectMapper) {
         this.objectMapper = objectMapper;

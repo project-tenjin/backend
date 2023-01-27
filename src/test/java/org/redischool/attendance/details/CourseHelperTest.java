@@ -9,7 +9,7 @@ import java.util.List;
 
 import static com.mscharhag.oleaster.runner.StaticRunnerSupport.*;
 import static java.util.Collections.emptyList;
-import static org.assertj.core.api.Java6Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThat;
 
 @RunWith(OleasterRunner.class)
 public class CourseHelperTest {
@@ -19,9 +19,7 @@ public class CourseHelperTest {
 
     {
         describe("CourseHelper", () -> {
-            beforeEach(() -> {
-                courseHelper = new CourseHelper();
-            });
+            beforeEach(() -> courseHelper = new CourseHelper());
 
             describe("closestCourseDate", () -> {
                 describe("when course has dates", () -> {
@@ -56,9 +54,7 @@ public class CourseHelperTest {
                 });
 
                 describe("when course has NO dates", () -> {
-                    beforeEach(() -> {
-                        courseDetails = new CourseDetails("", emptyList(), emptyList(), emptyList());
-                    });
+                    beforeEach(() -> courseDetails = new CourseDetails("", emptyList(), emptyList(), emptyList()));
 
                     it("returns null", () -> {
                         String result = courseHelper.closestCourseDate(new Date(2017, 12, 3), courseDetails);
