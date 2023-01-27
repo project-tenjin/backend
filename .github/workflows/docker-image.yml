@@ -15,11 +15,14 @@ jobs:
     steps:
     - uses: actions/checkout@v3
     
-    - name: Buil tester
-      run: docker build . --file Dockerfile --target tester --tag "backend:${{github.sha}}"
+    - name: Buil Javascript tester
+      run: docker build . --file Dockerfile --target tester --tag "backend:tester_${{github.sha}}"
     
-    - name: Test
+    - name: Test Javascript
       run: docker run --name backend-tester --rm "backend:${{github.sha}}"
 
-    - name: Build runner
-      run: docker build . --file Dockerfile --target runner --tag backend:$(date +%s)      
+    - name: Build Java runner
+      run: docker build . --file Dockerfile --target runner --tag "backend:${{github.sha}}"
+
+    - name: Test Java
+      run: docker run --rm "backend:${{github.sha}}" gradle test
