@@ -22,7 +22,7 @@ COPY . .
 CMD npm test
 
 ########################################
-FROM openjdk:8-jdk-alpine as builder
+FROM openjdk:8-jdk-alpine as runner
 ########################################
 
 # Set environment variables for the application

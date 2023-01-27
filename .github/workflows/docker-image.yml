@@ -14,8 +14,12 @@ jobs:
 
     steps:
     - uses: actions/checkout@v3
-    - name: Build the Docker test image
-      run: docker build . --file Dockerfile --target tester --tag backend:$(date +%s)
+    
+    - name: Buil tester
+      run: docker build . --file Dockerfile --target tester --tag backend:${{ github.event.workflow_run.head_sha }}
+    
+    - name: Test
+      run: docker run --name backend-tester --rm backend:${{ github.event.workflow_run.head_sha }}
 
-    - name: Build the Docker runner image
+    - name: Build runner
       run: docker build . --file Dockerfile --target runner --tag backend:$(date +%s)      
