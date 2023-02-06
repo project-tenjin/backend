@@ -2,7 +2,6 @@ package org.redischool.attendance;
 
 import org.junit.AfterClass;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.openqa.selenium.WebDriver;
@@ -27,7 +26,6 @@ import static org.springframework.boot.test.context.SpringBootTest.WebEnvironmen
 )
 @RunWith(SpringJUnit4ClassRunner.class)
 @ActiveProfiles("cloud")
-@Ignore("Currently failing, investigation in progress")
 public class FeatureTestForSecurity extends FeatureTestScaffolding {
 
     // redi-project-tenjin@googlegroups.com has access to Chasing Unicorns but not to Android App. Configured in okta admin console with group settings
@@ -103,13 +101,13 @@ public class FeatureTestForSecurity extends FeatureTestScaffolding {
     }
 
     private boolean authenticated() {
-        return !url().contains("/login");
+        return !url().contains("oktapreview");
     }
 
     private void loginViaOkta() {
         $("#okta-signin-username").fill().withText(username);
         $("#okta-signin-password").fill().withText(password);
-        $("#okta-signin-submit").submit();
+        $("#okta-signin-submit").click();
         WebDriverWait wait = new WebDriverWait(driver, 10);
         wait.until((fluentControl) -> driver.getCurrentUrl().contains("localhost"));
     }
