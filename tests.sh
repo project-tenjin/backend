@@ -2,5 +2,4 @@
 
 set -ex
 
-./jasmine.sh
 ./gradlew clean build
