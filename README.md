@@ -9,7 +9,6 @@ Java Spring app for project Tenjin.
 # Requirements
 
 * Java 11
-* Ruby (>= 2) (for test and dev, not in prod)
 * LastPass access (user redi-project-tenjin@googlegroups.com)
 * [CF CLI](https://github.com/cloudfoundry/cli#downloads)
 * [Travis CLI](https://github.com/travis-ci/travis.rb#installation)
@@ -51,18 +50,11 @@ Hints:
 
 ## Running the tests
 
-First, make sure `jasmine` is installed for JavaScript tests. This requires
-`ruby` and `bundler`. If `bundler` is not installed on your machine yet, run
-`gem install bundler`. Then run `bundle install` to install `jasmine`.
-
-To run all the tests, simply run `tests.sh`.
+TBD
 
 ### Jasmine
 
-Jasmine is configured with a custom config location. Either run `jasmine.sh`,
-install a shell tool which reads the included `.env` file (such as
-[dotenv.sh](https://github.com/gchaincl/dotenv.sh)) or run it directly while
-setting the `JASMINE_CONFIG_PATH` manually (`bundle exec rake jasmine:ci JASMINE_CONFIG_PATH=./src/test/javascripts/support/jasmine.yml`).
+TBD
 
 # Maintaining the Spreadsheet
 
