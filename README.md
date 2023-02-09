@@ -50,11 +50,19 @@ Hints:
 
 ## Running the tests
 
-TBD
+Build a docker image using the first part of the Dockerfile.
+```shell
+docker build . --target tester --tag "backend:tester"
+```
+
+Then run the built image.
+```shell
+docker run --name backend-tester --rm "backend:tester"
+```
 
 ### Jasmine
 
-TBD
+The frontend code is tested using a Javascript test framework called Jasmine. The package.json file defines its configuration.
 
 # Maintaining the Spreadsheet
 

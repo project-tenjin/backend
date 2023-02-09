@@ -1,0 +1,28 @@
+name: Docker Image CI
+
+on:
+  push:
+    branches: [ "master" ]
+  pull_request:
+    branches: [ "master" ]
+
+jobs:
+
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Build Javascript tester
+        run: docker build . --file Dockerfile --target tester --tag "backend:tester_${{github.sha}}"
+
+      - name: Test Javascript
+        run: docker run --name backend-tester --rm "backend:tester_${{github.sha}}"
+
+      - name: Build Java runner
+        run: docker build . --file Dockerfile --target runner --tag "backend:${{github.sha}}"
+
+      - name: Test Java
+        run: docker run --rm "backend:${{github.sha}}" gradle test
