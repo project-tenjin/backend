@@ -5,6 +5,8 @@
 .gradle
 build
 
+**/node_modules/
+
 # unencrypted credentials
 src/main/resources/google_sheets_credentials.json
 src/main/resources/google_sheets_acceptance_credentials.json
