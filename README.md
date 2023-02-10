@@ -50,12 +50,19 @@ Hints:
 
 ## Running the tests
 
-Just run `./gradlew test`.
+Build a docker image using the first part of the Dockerfile.
+```shell
+docker build . --target tester --tag "backend:tester"
+```
 
-Under Linux you _might_ also need to set `OPENSSL_CONF=/dev/null` environment variable.
-Without that PhantomJS might run into trouble.
-Also, make sure you have `chromedriver` on your path.
-Those two problems will be solved once we Dockerize test environment.
+Then run the built image.
+```shell
+docker run --name backend-tester --rm "backend:tester"
+```
+
+### Jasmine
+
+The frontend code is tested using a Javascript test framework called Jasmine. The package.json file defines its configuration.
 
 # Maintaining the Spreadsheet
 
