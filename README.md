@@ -38,7 +38,7 @@ Java Spring app for project Tenjin.
 
 ## Starting the app
 
-- In your IDE you can start the main method of [`AttendanceWebApplication`](src/main/java/org/redischool.attendance/AttendanceWebApplication.java)
+- In your IDE you can start the main method of [`AttendanceWebApplication`](src/main/java/org/redischool/attendance/AttendanceWebApplication.java)
 - open http://localhost:8080 in your Browser
 - you will be redirected to octa login page
 - login with the credentials you got from lastpass
