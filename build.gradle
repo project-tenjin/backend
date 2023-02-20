@@ -20,12 +20,13 @@ apply plugin: 'io.spring.dependency-management'
 apply plugin: 'com.github.node-gradle.node'
 
 jar {
-    baseName = 'project-tenjin'
-    version = '2.0-SNAPSHOT'
+    archiveBaseName = 'project-tenjin'
+    archiveVersion = '2.0-SNAPSHOT'
 }
 
-sourceCompatibility = '11'
-targetCompatibility = '11'
+compileJava {
+    options.release = 11
+}
 
 repositories {
     mavenCentral()
@@ -33,26 +34,26 @@ repositories {
 }
 
 dependencies {
-    compile("org.springframework.boot:spring-boot-starter-web:${springBootVersion}")
-    compile("org.springframework.boot:spring-boot-starter-thymeleaf:${springBootVersion}")
-    compile('org.springframework.boot:spring-boot-starter-security')
-    compile("org.springframework.security.oauth.boot:spring-security-oauth2-autoconfigure:${springBootVersion}")
-    compile('org.springframework.security.oauth:spring-security-oauth2:2.5.2.RELEASE')
-    compile('com.google.apis:google-api-services-sheets:v4-rev612-1.25.0')
+    implementation("org.springframework.boot:spring-boot-starter-web:${springBootVersion}")
+    implementation("org.springframework.boot:spring-boot-starter-thymeleaf:${springBootVersion}")
+    implementation('org.springframework.boot:spring-boot-starter-security')
+    implementation("org.springframework.security.oauth.boot:spring-security-oauth2-autoconfigure:${springBootVersion}")
+    implementation('org.springframework.security.oauth:spring-security-oauth2:2.5.2.RELEASE')
+    implementation('com.google.apis:google-api-services-sheets:v4-rev612-1.25.0')
 
-    runtime('org.springframework.boot:spring-boot-devtools')
+    runtimeOnly('org.springframework.boot:spring-boot-devtools')
 
-    testCompile('com.mscharhag.oleaster:oleaster-runner:0.2.0')
-    testCompile('org.springframework.boot:spring-boot-starter-test')
+    testImplementation('com.mscharhag.oleaster:oleaster-runner:0.2.0')
+    testImplementation('org.springframework.boot:spring-boot-starter-test')
 
-    testCompile('xml-apis:xml-apis:1.4.01')
+    testImplementation('xml-apis:xml-apis:1.4.01')
 
-    testCompile('org.fluentlenium:fluentlenium-core:4.8.0')
-    testCompile('org.fluentlenium:fluentlenium-junit:4.8.0')
-    testCompile('org.fluentlenium:fluentlenium-assertj:4.8.0')
-    testCompile('org.seleniumhq.selenium:selenium-java:3.141.59')
-    testCompile('io.github.bonigarcia:webdrivermanager:4.4.3')
-    testCompile('com.github.detro:ghostdriver:2.1.0')
+    testImplementation('org.fluentlenium:fluentlenium-core:4.8.0')
+    testImplementation('org.fluentlenium:fluentlenium-junit:4.8.0')
+    testImplementation('org.fluentlenium:fluentlenium-assertj:4.8.0')
+    testImplementation('org.seleniumhq.selenium:selenium-java:3.141.59')
+    testImplementation('io.github.bonigarcia:webdrivermanager:4.4.3')
+    testImplementation('com.github.detro:ghostdriver:2.1.0')
 }
 
 node {
@@ -60,7 +61,7 @@ node {
   version = "18.14.0"
 }
 
-tasks.withType(JavaCompile) {
+tasks.withType(JavaCompile).configureEach {
     options.compilerArgs << '-Xlint:unchecked'
     options.deprecation = true
 }
