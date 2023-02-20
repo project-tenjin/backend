@@ -4,7 +4,9 @@ import com.mscharhag.oleaster.runner.OleasterRunner;
 import org.junit.runner.RunWith;
 
 import java.util.Arrays;
+import java.util.Calendar;
 import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.List;
 
 import static com.mscharhag.oleaster.runner.StaticRunnerSupport.*;
@@ -57,7 +59,7 @@ public class CourseHelperTest {
                     beforeEach(() -> courseDetails = new CourseDetails("", emptyList(), emptyList(), emptyList()));
 
                     it("returns null", () -> {
-                        String result = courseHelper.closestCourseDate(new Date(2017, 12, 3), courseDetails);
+                        String result = courseHelper.closestCourseDate(new GregorianCalendar(2017, Calendar.DECEMBER, 3).getTime(), courseDetails);
                         assertThat(result).isNull();
                     });
                 });

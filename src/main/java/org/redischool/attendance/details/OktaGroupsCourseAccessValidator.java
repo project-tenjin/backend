@@ -8,7 +8,7 @@ import org.springframework.security.jwt.JwtHelper;
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
-import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 @Component
@@ -30,7 +30,7 @@ public class OktaGroupsCourseAccessValidator implements CourseAccessValidator {
 
     @Override
     public boolean hasPermissions(Authentication authentication, String courseName) {
-        ArrayList groups = (ArrayList) parseToken(authentication).get("groups");
+        List<String> groups = (List<String>) parseToken(authentication).get("groups");
         return groups.contains(courseName);
     }
 
