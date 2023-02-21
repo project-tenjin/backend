@@ -3,13 +3,11 @@ package org.redischool.attendance;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.support.ui.WebDriverWait;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
@@ -24,7 +22,6 @@ import static org.springframework.boot.test.context.SpringBootTest.WebEnvironmen
                 "credentials.password=bar"
         }
 )
-@ExtendWith(SpringExtension.class)
 @ActiveProfiles("cloud")
 public class FeatureTestForSecurity extends FeatureTestScaffolding {
 
