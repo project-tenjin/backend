@@ -10,6 +10,6 @@ jobs:
    steps:
      - uses: actions/checkout@v3
      - name: Build Javascript tester
-       run: docker build . --file Dockerfile --target tester --tag "backend:tester_${{github.sha}}"
+       run: docker build . --file Dockerfile --target js-tester --tag "js-tester_${{github.sha}}"
      - name: Test Javascript
-       run: docker run --name backend-tester --rm "backend:tester_${{github.sha}}"
+       run: docker run --name js-tester --rm "js-tester_${{github.sha}}"
