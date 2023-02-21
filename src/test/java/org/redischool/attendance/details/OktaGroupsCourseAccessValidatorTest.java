@@ -1,28 +1,30 @@
 package org.redischool.attendance.details;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.jwt.JwtHelper;
 import org.springframework.security.jwt.crypto.sign.MacSigner;
 
 import java.util.HashMap;
+import java.util.Map;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.Mockito.when;
 
-@RunWith(MockitoJUnitRunner.class)
+@ExtendWith(MockitoExtension.class)
 public class OktaGroupsCourseAccessValidatorTest {
     @Mock
     private Authentication authentication;
 
     private OktaGroupsCourseAccessValidator courseAccessValidator;
 
-    @Before
+    @BeforeEach
     public void setUp() {
         courseAccessValidator = new OktaGroupsCourseAccessValidator(new ObjectMapper());
     }
@@ -36,13 +38,14 @@ public class OktaGroupsCourseAccessValidatorTest {
         courseAccessValidator.validatePermissions(authentication, "Chasing Unicorns");
     }
 
-    @Test(expected = UserAccessDeniedException.class)
+    @Test
     public void validatePermissions_throws_whenUserDoesNotHavePermissions() throws UserAccessDeniedException {
-        HashMap<Object, Object> authDetails = new HashMap<>();
+        Map<Object, Object> authDetails = new HashMap<>();
         authDetails.put("tokenValue", tokenWithGroup("Chasing Unisus"));
         when(authentication.getDetails()).thenReturn(authDetails);
 
-        courseAccessValidator.validatePermissions(authentication, "Chasing Unicorns");
+        assertThatThrownBy(() -> courseAccessValidator.validatePermissions(authentication, "Chasing Unicorns"))
+                .isInstanceOf(UserAccessDeniedException.class);
     }
 
     @Test

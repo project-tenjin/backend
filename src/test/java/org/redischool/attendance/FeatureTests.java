@@ -3,10 +3,10 @@ package org.redischool.attendance;
 import com.google.common.collect.ImmutableMap;
 import org.fluentlenium.core.domain.FluentList;
 import org.fluentlenium.core.domain.FluentWebElement;
-import org.junit.AfterClass;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.redischool.attendance.spreadsheet.GoogleSheetsApi;
@@ -14,7 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -25,11 +25,10 @@ import java.util.concurrent.ThreadLocalRandom;
 import static java.util.concurrent.TimeUnit.SECONDS;
 import static java.util.stream.Collectors.toList;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.Assert.assertTrue;
 import static org.springframework.boot.test.context.SpringBootTest.WebEnvironment.RANDOM_PORT;
 
 @SpringBootTest(webEnvironment = RANDOM_PORT)
-@RunWith(SpringJUnit4ClassRunner.class)
+@ExtendWith(SpringExtension.class)
 @ActiveProfiles("test")
 public class FeatureTests extends FeatureTestScaffolding {
 
@@ -59,7 +58,7 @@ public class FeatureTests extends FeatureTestScaffolding {
     @Value("${google.spreadsheet.id}")
     private String spreadSheetId;
 
-    @Before
+    @BeforeEach
     public void setUp() {
         if (driver == null) {
             driver = createWebDriver();
@@ -69,7 +68,7 @@ public class FeatureTests extends FeatureTestScaffolding {
         setBaseUrl("http://localhost:" + port + "/");
     }
 
-    @AfterClass
+    @AfterAll
     public static void tearDown() {
         if (driver != null) {
             driver.quit();
@@ -123,7 +122,7 @@ public class FeatureTests extends FeatureTestScaffolding {
         goTo(getBaseUrl());
         selectCourse(COURSE_NAME);
 
-        assertTrue(radioButtonNotSelected());
+        assertThat(radioButtonNotSelected()).isTrue();
 
         selectDate();
 

@@ -3,7 +3,7 @@ package org.redischool.attendance;
 import io.github.bonigarcia.wdm.config.DriverManagerType;
 import io.github.bonigarcia.wdm.managers.PhantomJsDriverManager;
 import org.fluentlenium.adapter.FluentAdapter;
-import org.junit.BeforeClass;
+import org.junit.jupiter.api.BeforeAll;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.phantomjs.PhantomJSDriver;
@@ -18,7 +18,7 @@ public abstract class FeatureTestScaffolding extends FluentAdapter {
 	@LocalServerPort
 	protected int port;
 
-	@BeforeClass
+	@BeforeAll
 	public static void setupClass() {
 		PhantomJsDriverManager.getInstance(DriverManagerType.PHANTOMJS).setup();
 	}

@@ -1,10 +1,10 @@
 package org.redischool.attendance.summary;
 
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.redischool.attendance.details.CourseAccessValidator;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
@@ -17,7 +17,7 @@ import static org.mockito.BDDMockito.given;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
-@RunWith(MockitoJUnitRunner.class)
+@ExtendWith(MockitoExtension.class)
 public class CourseSummaryControllerTest {
 
     private MockMvc mvc;
@@ -28,8 +28,7 @@ public class CourseSummaryControllerTest {
     @Mock
     CourseAccessValidator courseAccessValidator;
 
-
-    @Before
+    @BeforeEach
     public void setUp() {
         mvc = MockMvcBuilders.standaloneSetup(new CourseSummaryController(courseSummaryRepository, courseAccessValidator)).build();
     }

@@ -43,13 +43,19 @@ dependencies {
 
     runtimeOnly('org.springframework.boot:spring-boot-devtools')
 
-    testImplementation('com.mscharhag.oleaster:oleaster-runner:0.2.0')
+    testImplementation('org.junit.jupiter:junit-jupiter')
+    testImplementation('org.junit.vintage:junit-vintage-engine')
+    testImplementation('com.mscharhag.oleaster:oleaster-runner:0.2.0') {
+      exclude group: 'junit', module: 'junit'
+    }
     testImplementation('org.springframework.boot:spring-boot-starter-test')
 
     testImplementation('xml-apis:xml-apis:1.4.01')
 
     testImplementation('org.fluentlenium:fluentlenium-core:4.8.0')
-    testImplementation('org.fluentlenium:fluentlenium-junit:4.8.0')
+    testImplementation('org.fluentlenium:fluentlenium-junit:4.8.0') {
+      exclude group: 'junit', module: 'junit'
+    }
     testImplementation('org.fluentlenium:fluentlenium-assertj:4.8.0')
     testImplementation('org.seleniumhq.selenium:selenium-java:3.141.59')
     testImplementation('io.github.bonigarcia:webdrivermanager:4.4.3')
@@ -70,3 +76,10 @@ task stage(dependsOn: ['build', 'clean'])
 build.mustRunAfter clean
 
 test.dependsOn(npm_test)
+
+test {
+    useJUnitPlatform()
+    testLogging {
+        events "skipped", "failed"
+    }
+}

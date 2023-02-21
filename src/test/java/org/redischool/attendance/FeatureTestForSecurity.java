@@ -1,15 +1,15 @@
 package org.redischool.attendance;
 
-import org.junit.AfterClass;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.support.ui.WebDriverWait;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
@@ -24,7 +24,7 @@ import static org.springframework.boot.test.context.SpringBootTest.WebEnvironmen
                 "credentials.password=bar"
         }
 )
-@RunWith(SpringJUnit4ClassRunner.class)
+@ExtendWith(SpringExtension.class)
 @ActiveProfiles("cloud")
 public class FeatureTestForSecurity extends FeatureTestScaffolding {
 
@@ -39,7 +39,7 @@ public class FeatureTestForSecurity extends FeatureTestScaffolding {
     @Value("${okta.test.password}")
     private String password;
 
-    @Before
+    @BeforeEach
     public void setUp() {
         boolean firstRun = driver == null;
 
@@ -51,7 +51,7 @@ public class FeatureTestForSecurity extends FeatureTestScaffolding {
         setBaseUrl("http://localhost:" + port + "/");
     }
 
-    @AfterClass
+    @AfterAll
     public static void tearDown() {
         if (driver != null) {
             driver.quit();
