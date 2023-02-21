@@ -12,10 +12,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
-import java.util.Collections;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
+import java.util.*;
 
 import static java.util.Arrays.asList;
 import static org.mockito.ArgumentMatchers.*;
@@ -55,16 +52,13 @@ public class CourseDetailsControllerTests {
                 asList("4/24", "4/27"),
                 // 2017, 4, 24 | 2017, 4, 27
                 asList(new Date(1492992000000L), new Date(1493251200000L)));
-        List<Object> datesMap = Collections.singletonList(new HashMap<String, List<?>>() {{
-            put("formatted", returnedCourseDetails.getFormattedDates());
-            put("java", returnedCourseDetails.getJavaDates());
-        }});
+        List<Map<String, String>> datesMap = Collections.emptyList();
 
         given(courseDetailsRepository.getCourseDetails("class2")).willReturn(returnedCourseDetails);
         given(courseHelper.closestCourseDate(any(), eq(returnedCourseDetails))).willReturn(closestCourseDate);
         given(courseHelper.getFormattedDatesMap(returnedCourseDetails)).willReturn(datesMap);
 
-        mvc.perform(get("/courses/?name=" + "class2"))
+        mvc.perform(get("/courses/?name=class2"))
                 .andExpect(status().isOk())
                 .andExpect(view().name("courseDetail"))
                 .andExpect(model().attribute("courseDetails", returnedCourseDetails))

@@ -27,10 +27,10 @@ public class CourseHelper {
         return supportingDateFormat(closestDate);
     }
 
-    public List<Object> getFormattedDatesMap(CourseDetails courseDetails) {
-        List<Object> datesMap = new ArrayList<>();
+    public List<Map<String, String>> getFormattedDatesMap(CourseDetails courseDetails) {
+        List<Map<String, String>> datesMap = new ArrayList<>();
         for (int i = 0; i < courseDetails.getJavaDates().size(); i++) {
-            Map<String, Object> dateMap = new HashMap<>();
+            Map<String, String> dateMap = new HashMap<>();
 
             // We want to keep allowing adjusting the user displayed date format by changing
             // the format in the backing Google SpreadSheet. However that means we can not
