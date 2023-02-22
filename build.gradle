@@ -75,6 +75,7 @@ tasks.withType(JavaCompile).configureEach {
 task stage(dependsOn: ['build', 'clean'])
 build.mustRunAfter clean
 
+npm_test.dependsOn(npm_install)
 test.dependsOn(npm_test)
 
 test {
