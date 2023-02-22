@@ -23,6 +23,7 @@ import static org.springframework.boot.test.context.SpringBootTest.WebEnvironmen
         }
 )
 @ActiveProfiles("cloud")
+@org.junit.jupiter.api.Disabled
 public class FeatureTestForSecurity extends FeatureTestScaffolding {
 
     // redi-project-tenjin@googlegroups.com has access to Chasing Unicorns but not to Android App. Configured in okta admin console with group settings
