@@ -8,7 +8,7 @@ Java Spring app for project Tenjin.
 
 # Requirements
 
-* Java 17
+* Java 11
 * LastPass access (user redi-project-tenjin@googlegroups.com)
 * [CF CLI](https://github.com/cloudfoundry/cli#downloads)
 * [Travis CLI](https://github.com/travis-ci/travis.rb#installation)
@@ -19,7 +19,7 @@ Java Spring app for project Tenjin.
 ## Build and setup
 
 * clone the project with git
-* make sure you have a JDK that supports Java 17
+* make sure you have a JDK that supports Java 11
 * you need to decrypt encrypted files. Get the key and iv from Lastpass and set as env variables:
     * `export KEY_FROM_LASTPASS="<key>"`
     * `export IV_FROM_LASTPASS="<iv>"`
