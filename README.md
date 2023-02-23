@@ -54,7 +54,6 @@ Just run `./gradlew test`.
 
 Under Linux you _might_ also need to set `OPENSSL_CONF=/dev/null` environment variable.
 Without that PhantomJS might run into trouble.
-Also, make sure you have `chromedriver` on your path.
 Those two problems will be solved once we Dockerize test environment.
 
 # Maintaining the Spreadsheet
