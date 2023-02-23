@@ -12,6 +12,7 @@ import org.springframework.test.context.ActiveProfiles;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 
+import static java.util.concurrent.TimeUnit.SECONDS;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.boot.test.context.SpringBootTest.WebEnvironment.DEFINED_PORT;
 
@@ -102,6 +103,7 @@ public class FeatureTestForSecurity extends FeatureTestScaffolding {
     }
 
     private void loginViaOkta() {
+        await().atMost(5, SECONDS).until(() -> $("#okta-signin-username").present());
         $("#okta-signin-username").fill().withText(username);
         $("#okta-signin-password").fill().withText(password);
         $("#okta-signin-submit").click();
