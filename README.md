@@ -57,6 +57,18 @@ Without that PhantomJS might run into trouble.
 Also, make sure you have `chromedriver` on your path.
 Those two problems will be solved once we Dockerize test environment.
 
+### Running javascript (jasmine) tests in Docker
+
+Build a docker image using the Dockerfile.
+ ```shell
+ docker build . --target js-tester --tag "js-tester"
+ ```
+
+ Then run the built image.
+ ```shell
+ docker run --name js-tester --rm "js-tester"
+ ```
+
 # Maintaining the Spreadsheet
 
 > **See the [Admin user guide](https://docs.google.com/document/d/1fIz3po2vJMzwlIx3VeiIKGo0GpHNdIp_59fDWBSWB1Q/edit#heading=h.9uvtxou998ud)**

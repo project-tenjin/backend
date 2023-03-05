@@ -1,0 +1,15 @@
+name: Docker Image CI
+on:
+ push:
+   branches: [ "master" ]
+ pull_request:
+   branches: [ "master" ]
+jobs:
+ build:
+   runs-on: ubuntu-latest
+   steps:
+     - uses: actions/checkout@v3
+     - name: Build Javascript tester
+       run: docker build . --file Dockerfile --target js-tester --tag "js-tester_${{github.sha}}"
+     - name: Test Javascript
+       run: docker run --name js-tester --rm "js-tester_${{github.sha}}"
