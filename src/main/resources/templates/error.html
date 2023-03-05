@@ -22,7 +22,9 @@
         <p class="message extra">We'll send you back to course list in 3s...</p>
     </div>
     <div th:if="${status != 401}">
-        <p th:text="${status}" class="status"></p>
+        <p class="status">Oops... That didn't work!</p>
+        <p class="message">Please, contact ReDI School. Error code: </p>
+        <p class="message extra" th:text="${status}"></p>
     </div>
 </div>
 </body>
